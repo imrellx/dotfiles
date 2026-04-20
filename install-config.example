@@ -38,7 +38,7 @@ export GUI_LINUX=
 # If you ever want to change them then change them here, they will get written
 # to the correct files from this script, there's a few spots!
 #
-# I use the defaults and I suggest you do the same, here's the source:
+# The defaults follow the XDG Base Directory Specification:
 #   https://specifications.freedesktop.org/basedir/latest/
 export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
@@ -48,14 +48,13 @@ export XDG_STATE_HOME="${HOME}/.local/state"
 # Most of these have customized defaults, here's the source with defaults:
 #   https://wiki.archlinux.org/title/XDG_user_directories
 #
-# My thought process is if a program writes something to pictures, videos or
-# most other directories listed below it's probably a temporary location
-# because I would organize where the file will live permanently afterwards.
+# The values below treat most XDG user directories as temporary staging areas
+# (pictures, videos, desktop) on the assumption that content gets organized
+# into a permanent location afterwards. Music points at a real directory so
+# music players pick up a persistent library.
 #
-# However, for things like music I want music players to use the real directory.
-#
-# Of course you are free to customize these however you see fit! These only
-# get created and set if you have GUI_LINUX enabled on Arch.
+# Customize these however you see fit. They only get created and set if
+# GUI_LINUX is enabled on Arch.
 export XDG_DESKTOP_DIR="${HOME}/tmp/desktop"
 export XDG_DOCUMENTS_DIR="${HOME}/docs"
 export XDG_DOWNLOAD_DIR="${HOME}/downloads"
@@ -86,8 +85,7 @@ export PACKAGES_AUTO_CONFIRM=
 # It's useful if you want to skip a handful of packages without needing to
 # duplicate and maintain the default package list.
 #
-# Here's a documented list of what's installed by default:
-# https://github.com/nickjj/dotfiles/blob/master/_docs/packages.md
+# Documented list of what's installed by default: _docs/packages.md
 #
 # You can also find the defaults in _install/default/packages for each supported OS.
 
@@ -164,16 +162,13 @@ export MISE_LANGUAGES_EXTRAS
 # These are single files that get downloaded and made executable. Typically
 # they would be standalone scripts and tools that aren't in a package manager.
 #
-# For skipping, supply the name of the script, for example "invoice" but for
-# everything else you must supply the RAW_GITHUB_URL|VERSION_COMMAND, example:
-#   "https://raw.githubusercontent.com/nickjj/notes/v0.3.1/notes|--version"
+# For skipping, supply the name of the script. For everything else, supply
+# the RAW_GITHUB_URL|VERSION_COMMAND pair, for example:
+#   "https://raw.githubusercontent.com/example/tool/v0.1.0/tool|--version"
 #
 # The version is used to avoid downloading the same copy on every run.
 #
-# Here's a documented list of what's installed:
-# https://github.com/nickjj/dotfiles/blob/master/_docs/scripts.md
-#
-# You can also find the defaults in _install/default/scripts.
+# You can find the defaults in _install/default/scripts.
 
 # Scripts defined here will get installed in all OS / environments.
 export SCRIPTS_INSTALL=()
