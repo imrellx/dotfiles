@@ -90,7 +90,7 @@ like.
 
 If you want to see icons you'll need a "nerd font". There's hundreds of them on
 <https://www.nerdfonts.com/font-downloads> with previews. These dotfiles install
-Inconsolata NF by default.
+IBM Plex Mono Nerd Font by default.
 
 ### Setting a theme
 

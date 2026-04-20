@@ -1169,10 +1169,10 @@ update_dotfiles() {
 install_fonts() {
   _info "INSTALL FONTS"
 
-  local font_url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Inconsolata.zip"
-  local font_tmp="/tmp/inconsolata"
-  local font_zip="/tmp/inconsolata.zip"
-  local font_filename="InconsolataNerdFontMono-Regular.ttf"
+  local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/IBMPlexMono.zip"
+  local font_tmp="/tmp/ibmplexmono"
+  local font_zip="/tmp/ibmplexmono.zip"
+  local font_filename="IBMPlexMonoNerdFontMono-Regular.ttf"
   local macos_font_path="${HOME}/Library/Fonts"
   local linux_font_path="${XDG_DATA_HOME}/fonts"
   local font_path=
@@ -1193,7 +1193,7 @@ install_fonts() {
     _curl "${font_url}" -o "${font_zip}"
     unzip "${font_zip}" -d "${font_tmp}"
 
-    cp "${font_tmp}"/InconsolataNerdFont*.ttf "${font_path}"
+    cp "${font_tmp}"/IBMPlexMonoNerdFont*.ttf "${font_path}"
 
     # Update font cache on native Linux.
     [[ "${OS_TYPE}" = "linux" ]] && fc-cache -fv
@@ -1896,7 +1896,7 @@ install_tmux_plugins() {
 
 set_theme() {
   # Default to this theme as a fallback.
-  local theme="tokyonight-moon"
+  local theme="flexoki-dark"
 
   local active_theme=
   local theme_changed=

@@ -1,4 +1,7 @@
-font-family = Inconsolata Nerd Font
+# Theme indirection managed by set_theme; don't re-bake palette inline.
+# Diverges from ivn-term/config/ghostty/config, which ships an inline palette.
+
+font-family = BlexMono Nerd Font
 font-size = 11
 font-feature = -calt, -liga, -dlig
 
