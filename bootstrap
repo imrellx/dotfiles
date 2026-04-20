@@ -38,9 +38,8 @@ export GUI_ELIGIBLE=
 export GUI_ENABLED=
 
 export DOTFILES_PATH="${DOTFILES_PATH:-"${HOME}/dotfiles"}"
-export DOTFILES_BRANCH="${DOTFILES_BRANCH:-master}"
-export DOTFILES_CLONE_URL="${DOTFILES_CLONE_URL:-https://github.com/nickjj/dotfiles}"
-export DOTFILES_UPSTREAM_URL="${DOTFILES_UPSTREAM_URL:-"${DOTFILES_CLONE_URL}"}"
+export DOTFILES_BRANCH="${DOTFILES_BRANCH:-main}"
+export DOTFILES_CLONE_URL="${DOTFILES_CLONE_URL:-https://github.com/imrellx/dotfiles}"
 
 for arg in "${@}"; do
   case "${arg}" in
@@ -419,8 +418,6 @@ EOF
   _local_clone && return
 
   git clone --branch "${DOTFILES_BRANCH}" "${DOTFILES_CLONE_URL}" "${DOTFILES_PATH}"
-  git -C "${DOTFILES_PATH}" remote | grep --quiet --word-regexp upstream ||
-    git -C "${DOTFILES_PATH}" remote add upstream "${DOTFILES_UPSTREAM_URL}.git"
 
   cp -n "${DOTFILES_PATH}/install-config.example" "${DOTFILES_PATH}/install-config"
 }
@@ -431,7 +428,6 @@ _update_config() {
 
   perl -pi -e '
     s|export DOTFILES_CLONE_URL=".*"|export DOTFILES_CLONE_URL="\${DOTFILES_CLONE_URL:-'"${DOTFILES_CLONE_URL}"'}"|g;
-    s|export DOTFILES_UPSTREAM_URL=".*"|export DOTFILES_UPSTREAM_URL="\${DOTFILES_UPSTREAM_URL:-'"${DOTFILES_UPSTREAM_URL}"'}"|g;
     s|export DOTFILES_BRANCH=".*"|export DOTFILES_BRANCH="\${DOTFILES_BRANCH:-'"${DOTFILES_BRANCH}"'}"|g;
     '"${gui}"'
   ' "${DOTFILES_PATH}/install-config"

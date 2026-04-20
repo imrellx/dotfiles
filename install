@@ -45,9 +45,8 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   # This will get optionally populated later.
   SKIP_SYSTEM_PACKAGES=
 
-  DOTFILES_CLONE_URL="${DOTFILES_CLONE_URL:-https://github.com/nickjj/dotfiles}"
-  DOTFILES_UPSTREAM_URL="${DOTFILES_UPSTREAM_URL:-https://github.com/nickjj/dotfiles}"
-  DOTFILES_BRANCH="${DOTFILES_BRANCH:-master}"
+  DOTFILES_CLONE_URL="${DOTFILES_CLONE_URL:-https://github.com/imrellx/dotfiles}"
+  DOTFILES_BRANCH="${DOTFILES_BRANCH:-main}"
 
   YOUR_NAME="${YOUR_NAME:-}"
   YOUR_EMAIL="${YOUR_EMAIL:-}"
@@ -2199,27 +2198,6 @@ parse_args() {
 
     exit
     ;;
-  --diff | -d)
-    # Show a diff of any local uncommitted or committed changes vs the target.
-    #
-    # Since we have fzf, let's use it to make browsing diffs a nice experience!
-    target="${2:-"origin/${DOTFILES_BRANCH}"}"
-    side_by_side="${3:-}"
-
-    # Since target is optional we need to handle only passing in --side.
-    if [ "${target}" = "--side" ]; then
-      target="origin/${DOTFILES_BRANCH}"
-      side_by_side="--side"
-    fi
-
-    git remote | grep -q "${target//./}" && git fetch "${target//./}"
-    gd "${target}" ${side_by_side:+"${side_by_side}"}
-
-    _info "CONDENSED GIT DIFF"
-    GIT_PAGER="" git diff "${target}" --compact-summary
-
-    exit
-    ;;
   --new-commits | -n)
     # Show details about new commits that only exist in the target vs local.
     target="${2:-"..origin/${DOTFILES_BRANCH}"}"
@@ -2295,17 +2273,6 @@ parse_args() {
 
   # The same as above but show the diff in side-by-side (split) mode.
   ${C_GREEN}./install --diff-config --side${C_RESET}
-
-  # Show a diff of any local uncommited or committed changes vs the remote.
-  ${C_GREEN}./install --diff [TARGET]${C_RESET} (it defaults to "origin" if not supplied)
-
-  # The same as above but show the diff in side-by-side (split) mode.
-  ${C_GREEN}./install --diff --side${C_RESET}
-
-  # Compare your currently checked out branch to your local ${DOTFILES_BRANCH} branch, this
-  # could be helpful if you have a personalized branch and you pull updates into
-  # ${DOTFILES_BRANCH} and now you want to compare them locally.
-  ${C_GREEN}./install --diff ${DOTFILES_BRANCH}${C_RESET}
 
   # Show new remote commits that do not exist locally.
   ${C_GREEN}./install --new-commits [TARGET]${C_RESET} (it defaults to "..origin" if not supplied)
