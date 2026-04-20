@@ -54,8 +54,3 @@ export DEFAULT_CONFIG_INSTALL_ARCH=(
   "sudo ln -fns \"\${DOTFILES_PATH}/etc/conf.d/pacman-contrib\" \"/etc/conf.d/pacman-contrib\""
   "sudo ln -fns \"\${DOTFILES_PATH}/etc/pacman.d/01-options.conf\" \"/etc/pacman.d/01-options.conf\""
 )
-
-export DEFAULT_CONFIG_INSTALL_WSL=(
-  "cp \"\${DOTFILES_PATH}/mnt/c/Users/Nick/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json\" \"/mnt/c/Users/%WindowsUser/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json\" || true"
-  "sudo ln -fns \"\${DOTFILES_PATH}/etc/wsl.conf\" \"/etc/wsl.conf\""
-)

@@ -31,7 +31,6 @@ export OS_KERNEL=
 export OS_DISTRO=
 export OS_DISTRO_LIKE=
 export OS_DISTRO_ORIGINAL=
-export OS_IN_WSL=
 export OS_IN_CONTAINER="${OS_IN_CONTAINER:-}"
 export GUI_LINUX=
 export GUI_ELIGIBLE=
@@ -150,18 +149,13 @@ EOF
       _error "Your distro isn't supported, aborting!"
     fi
 
-    # Are we in WSL?
-    if grep --quiet --ignore-case "microsoft" /proc/version; then
-      OS_IN_WSL=1
-    fi
-
     # We can't fully depend on these which is why this env var exists, but it
     # at least protects someone running this script who didn't pass in the
     # environment variable in the common case (Docker or Podman).
     [[ -f "/.dockerenv" || -f "/run/.containerenv" ]] && OS_IN_CONTAINER="1"
 
     # Can we install and configure a window manager and GUI tools?
-    if [[ "${OS_DISTRO}" = "arch" && "${OS_IN_WSL}" != "1" && "${OS_IN_CONTAINER}" != "1" ]]; then
+    if [[ "${OS_DISTRO}" = "arch" && "${OS_IN_CONTAINER}" != "1" ]]; then
       GUI_ELIGIBLE=1
     fi
 
@@ -201,7 +195,6 @@ OS_KERNEL=${OS_KERNEL}
 OS_DISTRO=${OS_DISTRO_ORIGINAL}
 OS_DISTRO_LIKE=${OS_DISTRO_LIKE}
 
-OS_IN_WSL=${OS_IN_WSL:-0}
 OS_IN_CONTAINER=${OS_IN_CONTAINER:-0}
 
 GUI_ELIGIBLE=${GUI_ELIGIBLE:-0}
@@ -482,7 +475,6 @@ EOF
 ${C_RED}Sorry your OS isn't eligible, this option requires all of these to be true:${C_RESET}
 
 - Running an Arch based Linux distro [Yours: ${OS_DISTRO}]
-- Not running within WSL (Windows Subsystem for Linux) [Yours: ${OS_IN_WSL:-0}]
 - Not running in a container [Yours: ${OS_IN_CONTAINER:-0}]
 EOF
 

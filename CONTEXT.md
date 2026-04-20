@@ -80,5 +80,3 @@ _Avoid_: Flexoki, flexoki (without the mode suffix — we may add a light varian
 
 - "dotfiles repo" is ambiguous because this repo, `nickjj/dotfiles`, and `ivn-term` are all dotfile-adjacent. Canonical disambiguation: use the full slug when disambiguating — `imrellx/dotfiles`, `nickjj/dotfiles`, `ivn-term`. Unqualified "dotfiles" in repo-internal prose means this repo.
 - "teams folder" in project planning notes refers to `_themes/` (Wayland/neovim theme templates: `gruvbox-dark-medium`, `tokyonight-moon`). Verbal slip; no teams concept exists in this repo.
-- ".mnt folder needs to go into the etc folder" in project planning notes was a dictation slip. Canonical reading: both `mnt/` and `etc/wsl.conf` are **deleted**, not moved.
-- "WSL.com" in project planning notes refers to `etc/wsl.conf`. Dictation slip.

@@ -28,7 +28,7 @@ export YOUR_EMAIL=
 # -----------------------------------------------------------------------------
 
 # When set to "1", niri and graphical apps will be installed if you're using an
-# Arch based Linux distro. This is always skipped in WSL and in containers.
+# Arch based Linux distro. This is always skipped in containers.
 export GUI_LINUX=
 
 # -----------------------------------------------------------------------------
@@ -216,10 +216,6 @@ export CONFIG_INSTALL_GUI_LINUX_EXTRAS=()
 # Configs defined here only get created when on Arch Linux.
 export CONFIG_INSTALL_ARCH=()
 export CONFIG_INSTALL_ARCH_EXTRAS=()
-
-# Configs defined here only get created when in WSL.
-export CONFIG_INSTALL_WSL=()
-export CONFIG_INSTALL_WSL_EXTRAS=()
 
 # -----------------------------------------------------------------------------
 # Sudoers
