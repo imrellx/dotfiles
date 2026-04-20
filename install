@@ -45,9 +45,8 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   # This will get optionally populated later.
   SKIP_SYSTEM_PACKAGES=
 
-  DOTFILES_CLONE_URL="${DOTFILES_CLONE_URL:-https://github.com/nickjj/dotfiles}"
-  DOTFILES_UPSTREAM_URL="${DOTFILES_UPSTREAM_URL:-https://github.com/nickjj/dotfiles}"
-  DOTFILES_BRANCH="${DOTFILES_BRANCH:-master}"
+  DOTFILES_CLONE_URL="${DOTFILES_CLONE_URL:-https://github.com/imrellx/dotfiles}"
+  DOTFILES_BRANCH="${DOTFILES_BRANCH:-main}"
 
   YOUR_NAME="${YOUR_NAME:-}"
   YOUR_EMAIL="${YOUR_EMAIL:-}"
@@ -305,18 +304,6 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     CONFIG_INSTALL_ARCH_EXTRAS=()
   fi
 
-  if [[ "${CONFIG_INSTALL_WSL+x}" ]]; then
-    [ -z "${CONFIG_INSTALL_WSL}" ] && CONFIG_INSTALL_WSL=()
-  else
-    CONFIG_INSTALL_WSL=("${DEFAULT_CONFIG_INSTALL_WSL[@]}")
-  fi
-
-  if [[ "${CONFIG_INSTALL_WSL_EXTRAS+x}" ]]; then
-    [ -z "${CONFIG_INSTALL_WSL_EXTRAS}" ] && CONFIG_INSTALL_WSL_EXTRAS=()
-  else
-    CONFIG_INSTALL_WSL_EXTRAS=()
-  fi
-
   if [[ ! "${SUDOERS_ENTRIES+x}" ]]; then
     unset SUDOERS_ENTRIES
     declare -n SUDOERS_ENTRIES=DEFAULT_SUDOERS_ENTRIES
@@ -455,7 +442,30 @@ _install_packages_arch() {
   fi
 }
 
+_install_packages_debian_1password_apt_source() {
+  # Add the signed 1Password apt source per https://support.1password.com/install-linux/.
+  # Idempotent: tee overwrites and install -d is a no-op when the directory exists.
+  sudo install -dm 755 /usr/share/keyrings
+  _curl https://downloads.1password.com/linux/keys/1password.asc |
+    gpg --dearmor |
+    sudo tee /usr/share/keyrings/1password-archive-keyring.gpg 1>/dev/null
+  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main" |
+    sudo tee /etc/apt/sources.list.d/1password.list 1>/dev/null
+
+  # Add the debsig-verify policy + keyring so the .deb signature gets verified at install.
+  sudo install -dm 755 /etc/debsig/policies/AC2D62742012EA22
+  _curl https://downloads.1password.com/linux/debian/debsig/1password.pol |
+    sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol 1>/dev/null
+  sudo install -dm 755 /usr/share/debsig/keyrings/AC2D62742012EA22
+  _curl https://downloads.1password.com/linux/keys/1password.asc |
+    gpg --dearmor |
+    sudo tee /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg 1>/dev/null
+}
+
 _install_packages_debian() {
+  # 1Password ships through its own signed apt source, so wire it up before apt-get update.
+  _install_packages_debian_1password_apt_source
+
   # Install APT packages.
   _package_install apt "${PACKAGES_APT[@]}" "${PACKAGES_APT_EXTRAS[@]}"
 
@@ -586,11 +596,6 @@ _config_install() {
   ((${#commands[@]} == 0)) && return
 
   for item in "${commands[@]}"; do
-    # A special rule to avoid breaking DNS in WSL 2.
-    if [[ "${OS_IN_WSL}" == "1" && "${OS_DISTRO}" = "arch" ]]; then
-      [[ "${item}" == *"stub-resolv.conf"* ]] && continue
-    fi
-
     eval "${item//${str_find}/${str_replace}}"
   done
 }
@@ -674,10 +679,6 @@ _config_install_display() {
       fi
     done
 
-    # A special rule to avoid breaking DNS in WSL 2.
-    if [[ "${OS_IN_WSL}" == "1" && "${OS_DISTRO}" = "arch" ]]; then
-      [[ "${item}" == *"stub-resolv.conf"* ]] && continue
-    fi
   done
 
   if ((private_warning_count == 0)); then
@@ -969,7 +970,13 @@ create_initial_dirs() {
     "${XDG_CONFIG_HOME}/ghostty" \
     "${XDG_CONFIG_HOME}/git" \
     "${XDG_CONFIG_HOME}/gnupg" \
+    "${XDG_CONFIG_HOME}/mise" \
+    "${XDG_CONFIG_HOME}/sesh" \
+    "${XDG_CONFIG_HOME}/starship" \
+    "${XDG_CONFIG_HOME}/superfile" \
     "${XDG_CONFIG_HOME}/tmux/plugins" \
+    "${XDG_CONFIG_HOME}/vim" \
+    "${XDG_CONFIG_HOME}/yazi" \
     "${XDG_CONFIG_HOME}/zsh" \
     "${XDG_DATA_HOME}/fonts" \
     "${XDG_STATE_HOME}"
@@ -1191,11 +1198,10 @@ update_dotfiles() {
 install_fonts() {
   _info "INSTALL FONTS"
 
-  local font_url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Inconsolata.zip"
-  local font_tmp="/tmp/inconsolata"
-  local font_zip="/tmp/inconsolata.zip"
-  local font_filename="InconsolataNerdFontMono-Regular.ttf"
-  local windows_font_path="/mnt/c/Windows/Fonts"
+  local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/IBMPlexMono.zip"
+  local font_tmp="/tmp/ibmplexmono"
+  local font_zip="/tmp/ibmplexmono.zip"
+  local font_filename="IBMPlexMonoNerdFontMono-Regular.ttf"
   local macos_font_path="${HOME}/Library/Fonts"
   local linux_font_path="${XDG_DATA_HOME}/fonts"
   local font_path=
@@ -1203,10 +1209,6 @@ install_fonts() {
 
   if [ "${OS_TYPE}" = "linux" ]; then
     font_path="${linux_font_path}"
-
-    if [ "${OS_IN_WSL}" == "1" ]; then
-      font_path="${windows_font_path}"
-    fi
   else
     font_path="${macos_font_path}"
   fi
@@ -1220,27 +1222,7 @@ install_fonts() {
     _curl "${font_url}" -o "${font_zip}"
     unzip "${font_zip}" -d "${font_tmp}"
 
-    if [ "${OS_IN_WSL}" == "1" ]; then
-      cat <<EOF
-
-Since we're in WSL 2 and we need to install Windows fonts, please do it manually.
-
-Most of it has been automated for you, from within WSL 2 perform these steps:
-
-1. cd ${font_tmp}
-2. explorer.exe .
-3. Right click the fonts and INSTALL FOR ALL USERS
-4. rm -rf "${font_zip}" "${font_tmp}"
-
-It's important step 3 is for all users not your personal user. It's also
-important step 4 is executed so this script doesn't always download the font's
-zip file and extract it to step 1.
-EOF
-
-      return 0
-    fi
-
-    cp "${font_tmp}"/InconsolataNerdFont*.ttf "${font_path}"
+    cp "${font_tmp}"/IBMPlexMonoNerdFont*.ttf "${font_path}"
 
     # Update font cache on native Linux.
     [[ "${OS_TYPE}" = "linux" ]] && fc-cache -fv
@@ -1337,6 +1319,20 @@ install_external_scripts() {
   printf "\nThey were installed to '%s'\n" "${HOME}/.local/bin/"
 }
 
+install_claude_code() {
+  _info "INSTALL CLAUDE CODE"
+
+  if [ "${SKIP_SYSTEM_PACKAGES}" == "1" ]; then
+    echo "Skipping, since this only runs when packages get installed"
+    return
+  fi
+
+  # The native installer handles already-installed upgrades; running again is
+  # a no-op or in-place upgrade. We use it instead of the npm package because
+  # Anthropic recommends the native installer and ships it first.
+  _curl https://claude.ai/install.sh | bash -s latest
+}
+
 install_configs() {
   local auto_confirm="${1:-"${CONFIG_INSTALL_AUTO_CONFIRM:-}"}"
 
@@ -1346,7 +1342,6 @@ install_configs() {
 
   local config_install=()
   local config_install_gui_linux=()
-  local config_install_wsl=()
   local config_install_arch=()
 
   ((${#CONFIG_INSTALL[@]} > 0)) && config_install+=("${CONFIG_INSTALL[@]}")
@@ -1354,9 +1349,6 @@ install_configs() {
 
   ((${#CONFIG_INSTALL_GUI_LINUX[@]} > 0)) && config_install_gui_linux+=("${CONFIG_INSTALL_GUI_LINUX[@]}")
   ((${#CONFIG_INSTALL_GUI_LINUX_EXTRAS[@]} > 0)) && config_install_gui_linux+=("${CONFIG_INSTALL_GUI_LINUX_EXTRAS[@]}")
-
-  ((${#CONFIG_INSTALL_WSL[@]} > 0)) && config_install_wsl+=("${CONFIG_INSTALL_WSL[@]}")
-  ((${#CONFIG_INSTALL_WSL_EXTRAS[@]} > 0)) && config_install_wsl+=("${CONFIG_INSTALL_WSL_EXTRAS[@]}")
 
   ((${#CONFIG_INSTALL_ARCH[@]} > 0)) && config_install_arch+=("${CONFIG_INSTALL_ARCH[@]}")
   ((${#CONFIG_INSTALL_ARCH_EXTRAS[@]} > 0)) && config_install_arch+=("${CONFIG_INSTALL_ARCH_EXTRAS[@]}")
@@ -1366,15 +1358,6 @@ install_configs() {
   if [ "${GUI_ENABLED}" == "1" ]; then
     sudo mkdir -p "/etc/systemd/system/systemd-networkd-wait-online.service.d"
     _config_install_display "Configs (GUI)" "${config_install_gui_linux[@]}"
-  fi
-
-  if [ "${OS_IN_WSL}" == "1" ]; then
-    local windows_user=
-
-    # shellcheck disable=SC2016
-    windows_user="$(powershell.exe '$env:UserName' 2>/dev/null | tr -d '\r\n')"
-
-    _config_install_display "Configs (WSL)" "%WindowsUser" "${windows_user}" "${config_install_wsl[@]}"
   fi
 
   if [ "${OS_DISTRO}" == "arch" ]; then
@@ -1400,7 +1383,6 @@ install_configs() {
     _config_install "${config_install[@]}"
 
     [ "${GUI_ENABLED}" == "1" ] && _config_install "${config_install_gui_linux[@]}"
-    [ "${OS_IN_WSL}" == "1" ] && _config_install "%WindowsUser" "${windows_user}" "${config_install_wsl[@]}"
     [ "${OS_DISTRO}" == "arch" ] && _config_install "${config_install_arch[@]}"
 
     return 0
@@ -1724,50 +1706,6 @@ EOF
       if ! grep -q "^if uwsm check may-start.*$" "${zprofile_path}" 2>/dev/null; then
         printf "\n# Start niri after logging in.\nif uwsm check may-start; then exec uwsm start -- niri.desktop; fi\n" >>"${zprofile_path}"
       fi
-    # Are we in WSL 2?
-    elif [ "${OS_IN_WSL}" == "1" ]; then
-      # This only applies if you have Docker installed without Docker Desktop
-      # and you're not using systemd.
-      if command -v docker >/dev/null 2>&1; then
-        if [ ! -d "${HOME}/.docker/desktop" ]; then
-          if [ ! -d /run/systemd/system ]; then
-            if ! grep -q "^if service docker status.*$" "${zprofile_path}" 2>/dev/null; then
-              local docker=
-              docker=$(
-                cat <<'EOF'
-# Ensure Docker is running on WSL 2. This expects you've installed Docker and
-# Docker Compose directly within your WSL distro instead of Docker Desktop, such as:
-#   - https://nickjanetakis.com/blog/install-docker-in-wsl-2-without-docker-desktop
-if service docker status 2>&1 | grep -q "is not running"; then
-wsl.exe --distribution "${WSL_DISTRO_NAME}" --user root \
-  --exec /usr/sbin/service docker start >/dev/null 2>&1
-fi
-EOF
-              )
-
-              printf "\n\n%s" "${docker}" >>"${zprofile_path}"
-            fi
-          fi
-        fi
-      fi
-
-      if ! grep -q '^alias drop_cache=' "${aliases_path}" 2>/dev/null; then
-        cat <<EOF >>"${aliases_path}"
-
-# This is specific to WSL 2. If the WSL 2 VM goes rogue and decides not to free
-# up memory, this command will free your memory after about 20-30 seconds.
-#   Details: https://github.com/microsoft/WSL/issues/4166#issuecomment-628493643
-alias drop_cache="sudo sh -c \"echo 3 >'/proc/sys/vm/drop_caches' && swapoff -a && swapon -a && printf '\n%s\n' 'Ram-cache and Swap Cleared'\""
-EOF
-      fi
-
-      if ! grep -q '^alias open="/mnt/c/Program' "${aliases_path}" 2>/dev/null; then
-        cat <<EOF >>"${aliases_path}"
-
-alias open="/mnt/c/Program\ Files/Mozilla\ Firefox/firefox.exe"
-alias wopen="cmd.exe /C start 2> /dev/null"
-EOF
-      fi
     fi
   fi
 
@@ -1938,8 +1876,7 @@ configure_git() {
   email = ${YOUR_EMAIL}
 
 # Uncomment the options below to auto-sign your git commits / tags using GPG.
-# Learn more about signing git commits here:
-#   https://nickjanetakis.com/blog/signing-and-verifying-git-commits-on-the-command-line-and-github
+# See: man gpg-agent
 
 #[commit]
 #  gpgsign = true
@@ -1985,13 +1922,6 @@ install_programming_languages() {
     else
       mise use --global "${mise_languages[${key}]}"
     fi
-
-    # Also install Yarn for Node.
-    if [ "${key}" = "node" ]; then
-      if ! yarn --version >/dev/null 2>&1; then
-        npm install --unsafe-perm=true --allow-root --global yarn
-      fi
-    fi
   done
 }
 
@@ -2009,7 +1939,7 @@ install_tmux_plugins() {
 
 set_theme() {
   # Default to this theme as a fallback.
-  local theme="tokyonight-moon"
+  local theme="flexoki-dark"
 
   local active_theme=
   local theme_changed=
@@ -2096,21 +2026,7 @@ set_theme() {
   # We can abort now since if we're not changing anything there's no reloading.
   [ -z "${theme_changed}" ] && return
 
-  if [ "${OS_IN_WSL}" == "1" ]; then
-    local windows_user=
-
-    # shellcheck disable=SC2016
-    windows_user="$(powershell.exe '$env:UserName' | tr -d '\r\n')"
-
-    WT_PATH="/mnt/c/Users/${windows_user}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
-    SED_EXPR='s/\("\(colorScheme\|theme\)": *"\)[^"]*"/\1'"${theme}"'"/'
-
-    # Let's make sure the path exists before replacing anything in case someone
-    # removed the config entry from CONFIG_INSTALL_WSL.
-    [ -e "${WT_PATH}" ] && sed -i "${SED_EXPR}" "${WT_PATH}"
-  else
-    dot-reload-app ghostty
-  fi
+  dot-reload-app ghostty
 
   # Reload as many apps as we can.
   dot-reload-app btop
@@ -2162,19 +2078,10 @@ You can safely close this terminal.
 The next time you open your terminal everything will be ready to go!
 EOF
 
-  if [[ "${OS_IN_WSL}" == "1" && -f "/tmp/inconsolata.zip" ]]; then
-    cat <<EOF
-
-P.S.,
-
-Since you're on WSL 2, please scroll up to the "INSTALL FONTS" section and
-follow the few steps there to complete the installation. You only need to do
-this once to install a few system fonts.
-EOF
   # If there's no Wayland display then it's very likely the first time a user
   # enabled GUI mode. This is more dependable than checking FIRST_RUN=1 in
   # case someone installs the command line tools and adds GUI support later.
-  elif [[ -z "${WAYLAND_DISPLAY:-}" && "${GUI_ENABLED}" == "1" ]]; then
+  if [[ -z "${WAYLAND_DISPLAY:-}" && "${GUI_ENABLED}" == "1" ]]; then
     cat <<EOF
 
 P.S.,
@@ -2196,27 +2103,6 @@ parse_args() {
 
     # shellcheck disable=SC2086
     git diff --no-index install-config.example install-config | delta ${side_by_side:+"${side_by_side}"}
-
-    exit
-    ;;
-  --diff | -d)
-    # Show a diff of any local uncommitted or committed changes vs the target.
-    #
-    # Since we have fzf, let's use it to make browsing diffs a nice experience!
-    target="${2:-"origin/${DOTFILES_BRANCH}"}"
-    side_by_side="${3:-}"
-
-    # Since target is optional we need to handle only passing in --side.
-    if [ "${target}" = "--side" ]; then
-      target="origin/${DOTFILES_BRANCH}"
-      side_by_side="--side"
-    fi
-
-    git remote | grep -q "${target//./}" && git fetch "${target//./}"
-    gd "${target}" ${side_by_side:+"${side_by_side}"}
-
-    _info "CONDENSED GIT DIFF"
-    GIT_PAGER="" git diff "${target}" --compact-summary
 
     exit
     ;;
@@ -2296,17 +2182,6 @@ parse_args() {
   # The same as above but show the diff in side-by-side (split) mode.
   ${C_GREEN}./install --diff-config --side${C_RESET}
 
-  # Show a diff of any local uncommited or committed changes vs the remote.
-  ${C_GREEN}./install --diff [TARGET]${C_RESET} (it defaults to "origin" if not supplied)
-
-  # The same as above but show the diff in side-by-side (split) mode.
-  ${C_GREEN}./install --diff --side${C_RESET}
-
-  # Compare your currently checked out branch to your local ${DOTFILES_BRANCH} branch, this
-  # could be helpful if you have a personalized branch and you pull updates into
-  # ${DOTFILES_BRANCH} and now you want to compare them locally.
-  ${C_GREEN}./install --diff ${DOTFILES_BRANCH}${C_RESET}
-
   # Show new remote commits that do not exist locally.
   ${C_GREEN}./install --new-commits [TARGET]${C_RESET} (it defaults to "..origin" if not supplied)
 
@@ -2368,6 +2243,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   install_gui_themes
   install_zsh_plugins
   install_external_scripts
+  install_claude_code
   install_configs
   configure_sudoers_entries
   configure_systemd_services

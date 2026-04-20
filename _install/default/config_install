@@ -10,8 +10,16 @@ export DEFAULT_CONFIG_INSTALL=(
   "ln -fns \"\${DOTFILES_PATH}/.config/git/config.local\" \"\${XDG_CONFIG_HOME}/git/config.local\""
   "ln -fns \"\${DOTFILES_PATH}/.config/git/config\" \"\${XDG_CONFIG_HOME}/git/config\""
   "ln -fns \"\${DOTFILES_PATH}/.config/gnupg/gpg-agent.conf\" \"\${XDG_CONFIG_HOME}/gnupg/gpg-agent.conf\""
+  "ln -fns \"\${DOTFILES_PATH}/.config/helix\" \"\${XDG_CONFIG_HOME}/helix\""
+  "ln -fns \"\${DOTFILES_PATH}/.config/lazygit\" \"\${XDG_CONFIG_HOME}/lazygit\""
+  "ln -fns \"\${DOTFILES_PATH}/.config/mise/config.toml\" \"\${XDG_CONFIG_HOME}/mise/config.toml\""
   "ln -fns \"\${DOTFILES_PATH}/.config/nvim\" \"\${XDG_CONFIG_HOME}/nvim\""
+  "ln -fns \"\${DOTFILES_PATH}/.config/sesh/sesh.toml\" \"\${XDG_CONFIG_HOME}/sesh/sesh.toml\""
+  "ln -fns \"\${DOTFILES_PATH}/.config/starship/starship.toml\" \"\${XDG_CONFIG_HOME}/starship/starship.toml\""
+  "ln -fns \"\${DOTFILES_PATH}/.config/superfile/config.toml\" \"\${XDG_CONFIG_HOME}/superfile/config.toml\""
   "ln -fns \"\${DOTFILES_PATH}/.config/tmux/tmux.conf\" \"\${XDG_CONFIG_HOME}/tmux/tmux.conf\""
+  "ln -fns \"\${DOTFILES_PATH}/.config/vim/.vimrc\" \"\${XDG_CONFIG_HOME}/vim/.vimrc\""
+  "ln -fns \"\${DOTFILES_PATH}/.config/yazi/yazi.toml\" \"\${XDG_CONFIG_HOME}/yazi/yazi.toml\""
   "ln -fns \"\${DOTFILES_PATH}/.config/zsh/.aliases.local\" \"\${XDG_CONFIG_HOME}/zsh/.aliases.local\""
   "ln -fns \"\${DOTFILES_PATH}/.config/zsh/.aliases\" \"\${XDG_CONFIG_HOME}/zsh/.aliases\""
   "ln -fns \"\${DOTFILES_PATH}/.config/zsh/.xdg.local\" \"\${XDG_CONFIG_HOME}/zsh/.xdg.local\""
@@ -53,9 +61,4 @@ export DEFAULT_CONFIG_INSTALL_ARCH=(
   "sudo ln -fns \"/run/systemd/resolve/stub-resolv.conf\" \"/etc/resolv.conf\""
   "sudo ln -fns \"\${DOTFILES_PATH}/etc/conf.d/pacman-contrib\" \"/etc/conf.d/pacman-contrib\""
   "sudo ln -fns \"\${DOTFILES_PATH}/etc/pacman.d/01-options.conf\" \"/etc/pacman.d/01-options.conf\""
-)
-
-export DEFAULT_CONFIG_INSTALL_WSL=(
-  "cp \"\${DOTFILES_PATH}/mnt/c/Users/Nick/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json\" \"/mnt/c/Users/%WindowsUser/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json\" || true"
-  "sudo ln -fns \"\${DOTFILES_PATH}/etc/wsl.conf\" \"/etc/wsl.conf\""
 )

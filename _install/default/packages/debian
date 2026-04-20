@@ -2,6 +2,8 @@
 # Customize these in the config file instead of editing them here.
 
 export DEFAULT_PACKAGES_APT=(
+  "1password"
+  "1password-cli"
   "aspell"
   "bat"
   "bc"
@@ -14,6 +16,7 @@ export DEFAULT_PACKAGES_APT=(
   "git"
   "git-delta"
   "gnupg"
+  "helix"
   "imagemagick"
   "inotify-tools"
   "iproute2"
@@ -28,6 +31,7 @@ export DEFAULT_PACKAGES_APT=(
   "tmux"
   "unzip"
   "usbutils"
+  "vim"
   "wev"
   "wget"
   "whois"
@@ -42,9 +46,14 @@ export DEFAULT_MISE_DEBIAN=(
   "fd"
   "fzf"
   "jq"
+  "lazygit"
   "neovim"
   "ripgrep"
+  "sesh"
   "shellcheck"
   "shfmt"
+  "starship"
+  "superfile"
+  "yazi"
   "yq"
 )

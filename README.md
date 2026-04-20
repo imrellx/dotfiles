@@ -1,11 +1,9 @@
 # dotfiles
 
+Based on [nickjj/dotfiles](https://github.com/nickjj/dotfiles).
+
 This readme along with an install script will help you get everything running
-in a few minutes. It contains a bunch of configuration for the [tools I
-use](https://nickjanetakis.com/blog/the-tools-i-use). I also have a number of
-[blog posts and
-videos](https://nickjanetakis.com/blog/tag/dev-environment-tips-tricks-and-tutorials)
-related to my dev environment.
+in a few minutes.
 
 ## 🧬 Who Is This For?
 
@@ -17,11 +15,10 @@ script](./install) multiple times to stay up to date.
 
 ### Philosophy
 
-I deeply understand one person's bloat is another person's treasure. All
-packages, configs and symlinks are configurable before you modify your system.
-A mini-goal of this project is to avoid needing to fork this project while
-still giving you a reasonable amount of control, and if you want to fork it
-that's fine too.
+One person's bloat is another person's treasure. All packages, configs and
+symlinks are configurable before you modify your system. A mini-goal of this
+project is to avoid needing to fork it while still giving you a reasonable
+amount of control, and if you want to fork it that's fine too.
 
 Your machine is yours. If you want to dual boot, do it up. If you want multiple
 users, sure thing. If you don't want to encrypt your drive, no problem.
@@ -45,7 +42,6 @@ Everyone is welcome here and you have full control.
 - Debian
 - Ubuntu (vanilla and all flavors)
 - macOS
-- *WSL 2 is supported for any supported Linux distros*
 
 ### (Optional) Scrolling / tiling desktop environment
 
@@ -57,23 +53,6 @@ Everyone is welcome here and you have full control.
 - Hotkey focused but tons of mouse / trackpad support
 - Prefer TUI (Terminal User Interface) apps over GUI apps when possible
 - Development / media creation focused apps are ready to go
-
-#### Why niri and not XYZ?
-
-It's resource efficient, extremely stable, lightning fast, infinitely
-tweakable, intuitively handles scrolling / tiling / floating windows,
-integrates awesomely with multiple monitors, actively developed, well thought
-out, has great documentation and the author is very helpful.
-
-niri feels like a perfect match and I wanted to make a special call out because
-it's *that* good. I'm the "I was there 3,000 years ago" meme from Windows 2000,
-XP, 7, 10 and also macOS on company issued laptops. Nothing I have ever used in
-~25 years has approached how I feel using this set up. It's not even close (yes
-I tried Hyprland too).
-
-I recorded a [demo video](https://www.youtube.com/watch?v=7XmD5UyyhZQ) on how I
-use niri in my day to day. This repo will always have the most up to date
-changes so what you see on video will likely evolve over time!
 
 ### Packages, scripts and more
 
@@ -94,14 +73,8 @@ packages, standalone scripts, programming languages and more.
   - [How to add custom themes?](#how-to-add-custom-themes)
   - [How to install Arch Linux?](#how-to-install-arch-linux)
   - [How do I get started with the desktop environment?](#how-do-i-get-started-with-the-desktop-environment)
-  - [Where is the original Vim config?](#where-is-the-original-vim-config)
-- [About the Author](#-about-the-author)
 
 ## 🎨 Themes
-
-Since these dotfiles are constantly evolving and I tend to reference them in
-videos, blog posts and other places I thought it would be a good idea to
-include screenshots in 1 spot.
 
 ### Tokyonight Moon
 
@@ -111,13 +84,13 @@ include screenshots in 1 spot.
 
 ![Gruvbox Dark Medium](./themes/gruvbox-dark-medium/_preview.jpg)
 
-I prefer using themes that have good contrast ratios and are clear to see in
-video recordings. These dotfiles currently support easily switching between
-both themes but you can use any theme you'd like.
+Themes in this repo aim for good contrast ratios. These dotfiles currently
+support easily switching between both themes but you can use any theme you'd
+like.
 
 If you want to see icons you'll need a "nerd font". There's hundreds of them on
-<https://www.nerdfonts.com/font-downloads> with previews. I personally use
-Inconsolata NF which these dotfiles install for you.
+<https://www.nerdfonts.com/font-downloads> with previews. These dotfiles install
+IBM Plex Mono Nerd Font by default.
 
 ### Setting a theme
 
@@ -131,9 +104,8 @@ dot-theme-set THEME_NAME
 
 When switching themes all GTK apps will live update (Thunar, Firefox, GIMP,
 etc.) and most terminal apps will live update too. If you have a bunch of
-shells already open you can run the `SZ` ([source
-zsh](https://nickjanetakis.com/blog/running-commands-in-all-tmux-sessions-windows-and-panes))
-alias to source new theme related configs.
+shells already open you can run the `SZ` alias to source new theme related
+configs.
 
 *Not all terminals are supported, if yours didn't change then check [theming
 custom apps](#how-to-theme-custom-apps).*
@@ -197,7 +169,7 @@ apt-get update && apt-get install --yes --no-install-recommends curl
 **You can download and run the bootstrap script with this 1 liner:**
 
 ```sh
-bash <(curl -fsSL https://raw.githubusercontent.com/nickjj/dotfiles/master/bootstrap)
+bash <(curl -fsSL https://raw.githubusercontent.com/imrellx/dotfiles/main/bootstrap)
 ```
 
 You'll be presented with a y/n prompt before installing anything of substance.
@@ -219,7 +191,7 @@ docker container run --rm -it -e "OS_IN_CONTAINER=1" -v "${PWD}:/app" -w /app de
 # Since we can't open a new terminal in a container we'll need to manually
 # launch zsh and source a few files. That's what the last line is doing.
 apt-get update && apt-get install --yes --no-install-recommends curl \
-  && bash <(curl -fsSL https://raw.githubusercontent.com/nickjj/dotfiles/master/bootstrap) \
+  && bash <(curl -fsSL https://raw.githubusercontent.com/imrellx/dotfiles/main/bootstrap) \
   && zsh -c ". ~/.config/zsh/.zprofile && . ~/.config/zsh/.zshrc; zsh -i"
 ```
 
@@ -249,9 +221,6 @@ Here's a few handy commands, you can run `./install --help` to see all of them:
 - `./install --diff-config | -g`
   - Compare your local `install-config` to the local `install-config.example`
   - Helps keep your git ignored `install-config` in sync with new options
-- `./install --diff | -d`
-  - Compare what you have locally vs the latest remote commits
-  - See what will change if you `--update` without modifying your git tree
 - `./install --new-commits | -n`
   - Show new remote commits that do not exist locally
   - Present a quick list of what's available to pull locally
@@ -278,43 +247,6 @@ project.
 Before you start customizing other files, please take a look at the
 [personalization question in the FAQ](#how-to-personalize-these-dotfiles).
 
-### 🪟 Extra WSL 2 steps
-
-In addition to the Linux side of things, there's a few config files that I have
-in various directories of this dotfiles repo. These have long Windows paths and
-are in the `mnt/c/` directory.
-
-It would be expected that you copy those over to your system while replacing
-"Nick" with your Windows user name if you want to use those things. The
-Microsoft Terminal config will automatically be copied over to your user's
-path.
-
-It's expected you're running WSL 2 with WSLg support to get clipboard sharing
-to work between Windows and WSL 2. You can run `wsl.exe --version` from WSL 2
-to check if WSLg is listed. Chances are you have it since it has been supported
-since 2022! All of this should "just work". If clipboard sharing isn't working,
-check your `.wslconfig` file in your Windows user's directory and make sure
-`guiApplications=false` isn't set.
-
-*If you see `^M` characters when pasting into Neovim, that's a Windows line
-ending. That's because WSLg's clipboard feature doesn't seem to handle this
-automatically. If you paste with `CTRL+SHIFT+v` instead of `p` it'll be ok. I
-guess the Microsoft Terminal does extra processing to fix it for you.*
-
-Pay very close attention to the `mnt/c/Users/Nick/.wslconfig` file because it
-has values in there that you will very likely want to change before using it.
-[This commit
-message](https://github.com/nickjj/dotfiles/commit/d0f1fc2622204b809cf7fcbb1a82d45b451064c4)
-goes into the details.
-
-Also, you should reboot or from PowerShell run `wsl --shutdown` and then
-re-open your WSL instance to activate your `/etc/wsl.conf` file (the install
-script created this).
-
-You may have noticed I don't enable systemd within WSL 2. That is on purpose.
-I've found it delays opening WSL 2 by ~10-15 seconds and also any systemd
-services were delayed from starting by ~2 minutes.
-
 ## 🔍 FAQ
 
 ### How to personalize these dotfiles?
@@ -326,7 +258,7 @@ various Neovim settings. Since this is a git repo you can always do a
 dotfiles, but then you may find yourself clobbering over your own personal
 changes.
 
-We have a few reasonable options without custom branches or forking:
+A few reasonable options without custom branches or forking:
 
 - For minor changes like adjusting which packages get installed, the install config file lets you do that
 - For minor config changes some tools let you include config files, so any git ignored `.local` files you see is a way to customize them without needing to adjust the main config
@@ -337,26 +269,20 @@ your "real" files in the dotfiles repo with a different name
 If the above isn't enough, or maybe you want things more streamlined you can
 `git checkout -b personalized` and now you're free to make whatever changes you
 want on your custom  branch. When it comes time to pull down future updates you
-can run a `git pull origin master` and then `git rebase master` to integrate
+can run a `git pull origin main` and then `git rebase main` to integrate
 any updates.
 
 Another option is to fork this repo and use that, then periodically pull and
-merge updates. It's really up to you. By default these dotfiles will add an
-`upstream` git remote that points to this repo for easy comparison.
-
-I personally use these dotfiles on 3 different devices with different operating
-systems and haven't forked or created separate branches on any of them. I just
-tweaked the install config.
+merge updates.
 
 ### How to theme custom apps?
 
-You'd add its theme file to each theme in [_themes/](./_themes) and update the
+Add its theme file to each theme in [_themes/](./_themes) and update the
 [install](./install) script's `set_theme` function to symlink the config. If
-your app has no dedicated config file, you can copy what I did for the
-Microsoft Terminal in `set_theme`.
+the app has no dedicated config file, follow the pattern used for other apps
+handled inside `set_theme`.
 
-Happy to assist in your issue / PR to answer questions if you want to
-contribute your change.
+Contributions welcome via issue or PR.
 
 ### How to add custom themes?
 
@@ -368,13 +294,12 @@ contribute your change.
 Switch to it by running `dot-theme-set NEW_THEME_NAME` and use the name you
 picked in step 3.
 
-If you added a theme with good contrast ratios please open a pull request to
-get it added to this project.
+If you add a theme with good contrast ratios, a pull request is welcome.
 
 ### How to install Arch Linux?
 
 Nothing here is too specific to these dotfiles, it's general knowledge on
-setting up Arch but I wanted to include these steps to help get you going.
+setting up Arch but these steps are included to help get you going.
 
 #### Set up a bootable USB drive
 
@@ -388,7 +313,7 @@ setting up Arch but I wanted to include these steps to help get you going.
 
 #### After booting from the USB drive
 
-- Following any instructions it says before running `archinstall`
+- Follow any instructions it says before running `archinstall`
   - For example if you use Wi-Fi you'll want to run `iwctl` to [set up your network](https://wiki.archlinux.org/title/Iwd#iwctl):
     - `iwctl`
       - `device list` shows devices such as `wlan0` which we'll use below
@@ -402,10 +327,9 @@ setting up Arch but I wanted to include these steps to help get you going.
 #### Run `archinstall` from your shell
 
 The script guides you pretty well. Here's a few important callouts in the order
-they appear in the menu. The callouts are mostly my opinions, you can of course
-choose other options and have things work. The goal of this guide isn't to
-dictate what you do, it's to help you avoid analysis paralysis and see what's
-configurable before you do it.
+they appear in the menu. These callouts are suggestions, not rules — other
+options will also work. The goal is to help you avoid analysis paralysis and
+see what's configurable before you do it.
 
 *Nothing you choose will happen immediately, you'll get to review everything at
 the end before anything happens. Generally speaking you'll be using enter to
@@ -424,25 +348,25 @@ space to toggle checkboxes.*
   - If you go with the default "best effort" it will wipe your full drive:
     - This is reasonable if you're *not* dual booting, if you dual boot you'll want to manually set this up
     - Make sure the correct drive you want wiped is selected!
-    - For the file system type, I went with `ext4` given how mature it is but `btrfs` is also mostly ok, if you're not sure or don't know what's different just choose `ext4`
-    - Now it asks if you want a separate partition for your home directory, I chose no because I always end up wanting to adjust the size later and prefer skipping LVM but it's up to you of course
+    - For the file system type, `ext4` is mature and a safe default, `btrfs` is also mostly ok
+    - It will ask if you want a separate partition for your home directory, picking no keeps things simple and avoids LVM
     - Review the info, you should see `/boot` and `/` (root) partitions at the very least
   - *Disk encryption*:
-      - It's up to you, I would, choose to encrypt all of your non-boot partitions and set a good password, then double confirm you can remember this password, it's very important
+      - Up to you — encrypting all non-boot partitions with a strong password is recommended; double-check you can remember it
 - **Swap**:
-  - It's up to you, I kept it enabled with zram which was the default
+  - Up to you, the default zram-based swap is fine
 - **Bootloader**:
-  - I rolled with `systemd-boot` which is the default
+  - `systemd-boot` is a reasonable default
   - *Unified kernel images*:
-    - I left this turned off but I suggest reading up on this more if you're interested
+    - Leaving this turned off is a safe default but read up if you're interested
 - **Kernels**:
-  - The normal kernel is likely fine which is the default but feel free to choose otherwise
+  - The normal kernel is a safe default
 - **Hostname**:
   - Picking a cool name will probably be the [longest time](https://xkcd.com/910/) you spend in the installer
   - You can always change it afterwards, don't sweat it!
 - **Authentication**:
   - *Root password*:
-    - Definitely set a password and don't forget it
+    - Set a password and don't forget it
   - *User account*:
     - Create your main user and pick a password you won't forget
     - Allow this user to be a superuser (sudo) as well
@@ -510,27 +434,3 @@ After logging in you'll be greeted with an empty desktop and a top bar.
 - Open a terminal and run `dt` to switch to the dotfiles repo and open it in Neovim
   - Explore `.config/niri/config.kdl` for a complete list of key binds
 - Have fun with *your* new system!
-
-### Where is the original Vim config?
-
-I've made dozens of [blog posts and
-videos](https://nickjanetakis.com/blog/tag/vim-tips-tricks-and-tutorials) about
-Vim. Sometimes I linked directly to a commit so there's a permalink to it but
-other times I did not.
-
-Before switching to Neovim I made a `vim` git tag. You can check out the state
-of the repo for that tag by [going
-here](https://github.com/nickjj/dotfiles/tree/vim). You'll see `.vimrc` in the
-root directory. If you cloned these dotfiles locally you can `git checkout
-vim`. Keep in mind that's frozen to that point in time. Future updates
-unrelated to Vim will not be included in that tag.
-
-## 👀 About the Author
-
-I'm a self taught developer and have been freelancing for the last ~20 years.
-You can read about everything I've learned along the way on my site at
-[https://nickjanetakis.com](https://nickjanetakis.com/). There's hundreds of
-[blog posts](https://nickjanetakis.com/blog/) and a couple of [video
-courses](https://nickjanetakis.com/courses/) on web development and deployment
-topics. I also have a [podcast](https://runninginproduction.com) where I talk
-to folks about running web apps in production.

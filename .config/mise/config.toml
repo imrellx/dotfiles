@@ -1,0 +1,5 @@
+# managed by ivn-term
+
+[settings]
+experimental = true
+python_default_packages_file = "~/.config/mise/default-python-packages"

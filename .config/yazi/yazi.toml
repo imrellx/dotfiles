@@ -1,0 +1,11 @@
+# managed by ivn-term — ANSI passthrough
+
+[manager]
+show_hidden = true
+sort_by = "natural"
+sort_dir_first = true
+
+[opener]
+edit = [
+  { run = 'nvim "$@"', block = true }
+]

@@ -20,9 +20,11 @@ export DEFAULT_PACKAGES_PACMAN=(
   "git-delta"
   "gnupg"
   "go-yq"
+  "helix"
   "imagemagick"
   "inotify-tools"
   "jq"
+  "lazygit"
   "less"
   "libqalculate"
   "man-db"
@@ -38,10 +40,12 @@ export DEFAULT_PACKAGES_PACMAN=(
   "shellcheck"
   "shfmt"
   "smartmontools"
+  "starship"
   "strace"
   "tmux"
   "unzip"
   "usbutils"
+  "vim"
   "wev"
   "wget"
   "whois"
@@ -109,7 +113,15 @@ export DEFAULT_PACKAGES_PACMAN_GUI=(
   "zathura-pdf-mupdf"
 )
 
+export DEFAULT_PACKAGES_AUR=(
+  "sesh"
+  "superfile"
+  "yazi"
+)
+
 export DEFAULT_PACKAGES_AUR_GUI=(
+  "1password-beta"
+  "1password-cli"
   "elephant-bin"
   "elephant-calc-bin"
   "elephant-clipboard-bin"

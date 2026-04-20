@@ -106,9 +106,9 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   # execute, it will use your system's shell and exporting a function like we're
   # doing doesn't work in zsh, so we're forcing bash.
   #
-  # If you're sniping this script without my dotfiles, you'll likely want to
-  # set a number of FZF_DEFAULT_OPTS such as the ones you can find here:
-  #   https://github.com/nickjj/dotfiles/blob/master/.config/fzf/config.sh
+  # If you're using this script standalone, you'll likely want to set a number
+  # of FZF_DEFAULT_OPTS. See the fzf config that ships with this repo at
+  # .config/fzf/config.sh for a working reference.
   fzf \
     --ansi --border=top --border-label " [ Enter: Show (local) | CTRL-o: Open (browser) | CTRL-y: Copy (commit) ] " \
     --disabled --no-sort --query "" \

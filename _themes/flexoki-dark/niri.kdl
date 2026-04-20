@@ -1,0 +1,26 @@
+overview {
+    backdrop-color "#100F0Fff"
+}
+
+recent-windows {
+    highlight {
+        active-color "#100F0Fff"
+    }
+}
+
+layout {
+    focus-ring {
+        active-gradient from="#4385BEee" to="#3AA99Fee" angle=45
+        inactive-color "#403E3Caa"
+    }
+
+    background-color "#100F0Fff"
+}
+
+window-rule {
+    match is-window-cast-target=true
+
+    focus-ring {
+        active-gradient from="#D14D41ee" to="#AF3029ee" angle=45
+    }
+}
