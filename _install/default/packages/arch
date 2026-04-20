@@ -120,6 +120,8 @@ export DEFAULT_PACKAGES_AUR=(
 )
 
 export DEFAULT_PACKAGES_AUR_GUI=(
+  "1password-beta"
+  "1password-cli"
   "elephant-bin"
   "elephant-calc-bin"
   "elephant-clipboard-bin"

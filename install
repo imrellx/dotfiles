@@ -442,7 +442,30 @@ _install_packages_arch() {
   fi
 }
 
+_install_packages_debian_1password_apt_source() {
+  # Add the signed 1Password apt source per https://support.1password.com/install-linux/.
+  # Idempotent: tee overwrites and install -d is a no-op when the directory exists.
+  sudo install -dm 755 /usr/share/keyrings
+  _curl https://downloads.1password.com/linux/keys/1password.asc |
+    gpg --dearmor |
+    sudo tee /usr/share/keyrings/1password-archive-keyring.gpg 1>/dev/null
+  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main" |
+    sudo tee /etc/apt/sources.list.d/1password.list 1>/dev/null
+
+  # Add the debsig-verify policy + keyring so the .deb signature gets verified at install.
+  sudo install -dm 755 /etc/debsig/policies/AC2D62742012EA22
+  _curl https://downloads.1password.com/linux/debian/debsig/1password.pol |
+    sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol 1>/dev/null
+  sudo install -dm 755 /usr/share/debsig/keyrings/AC2D62742012EA22
+  _curl https://downloads.1password.com/linux/keys/1password.asc |
+    gpg --dearmor |
+    sudo tee /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg 1>/dev/null
+}
+
 _install_packages_debian() {
+  # 1Password ships through its own signed apt source, so wire it up before apt-get update.
+  _install_packages_debian_1password_apt_source
+
   # Install APT packages.
   _package_install apt "${PACKAGES_APT[@]}" "${PACKAGES_APT_EXTRAS[@]}"
 

@@ -2,6 +2,7 @@
 # Customize these in the config file instead of editing them here.
 
 export DEFAULT_PACKAGES_BREW=(
+  "1password-cli"
   "aspell"
   "bash"
   "bat"
@@ -45,6 +46,7 @@ export DEFAULT_PACKAGES_BREW=(
 )
 
 export DEFAULT_PACKAGES_BREW_CASK=(
+  "1password"
   "firefox"
   "ghostty"
   "gimp"

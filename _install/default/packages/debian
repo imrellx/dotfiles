@@ -2,6 +2,8 @@
 # Customize these in the config file instead of editing them here.
 
 export DEFAULT_PACKAGES_APT=(
+  "1password"
+  "1password-cli"
   "aspell"
   "bat"
   "bc"
