@@ -4,5 +4,15 @@
 # shellcheck disable=SC2034
 declare -A DEFAULT_MISE_LANGUAGES
 
-DEFAULT_MISE_LANGUAGES["node"]="node@24.11"
-DEFAULT_MISE_LANGUAGES["python"]="python@3.14"
+# Language runtimes. Node pinned to @22 because npm tooling regularly breaks
+# on major bumps; the rest float on latest.
+DEFAULT_MISE_LANGUAGES["node"]="node@22"
+DEFAULT_MISE_LANGUAGES["bun"]="bun@latest"
+DEFAULT_MISE_LANGUAGES["python"]="python@latest"
+DEFAULT_MISE_LANGUAGES["rust"]="rust@latest"
+DEFAULT_MISE_LANGUAGES["go"]="go@latest"
+DEFAULT_MISE_LANGUAGES["zig"]="zig@latest"
+
+# Non-language CLI tools installed via mise's npm backend reuse this array;
+# the install loop checks ${XDG_DATA_HOME}/mise/shims/${key} for idempotency.
+DEFAULT_MISE_LANGUAGES["pi"]="npm:@mariozechner/pi-coding-agent@latest"

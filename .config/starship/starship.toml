@@ -1,0 +1,40 @@
+# managed by ivn-term — ANSI passthrough (inherits flexoki-dark from ghostty)
+
+format = """$directory$git_branch$git_status$nodejs$python$rust$golang$cmd_duration$character"""
+
+[character]
+success_symbol = "[›](green)"
+error_symbol = "[›](red)"
+
+[directory]
+style = "cyan bold"
+truncation_length = 3
+
+[git_branch]
+style = "blue"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "yellow"
+format = '([$all_status$ahead_behind]($style) )'
+
+[nodejs]
+style = "green"
+format = "[$symbol($version)]($style) "
+
+[python]
+style = "yellow"
+format = "[$symbol($version)]($style) "
+
+[rust]
+style = "red"
+format = "[$symbol($version)]($style) "
+
+[golang]
+style = "cyan"
+format = "[$symbol($version)]($style) "
+
+[cmd_duration]
+style = "yellow"
+min_time = 2_000
+format = "[$duration]($style) "

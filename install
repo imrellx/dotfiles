@@ -947,7 +947,13 @@ create_initial_dirs() {
     "${XDG_CONFIG_HOME}/ghostty" \
     "${XDG_CONFIG_HOME}/git" \
     "${XDG_CONFIG_HOME}/gnupg" \
+    "${XDG_CONFIG_HOME}/mise" \
+    "${XDG_CONFIG_HOME}/sesh" \
+    "${XDG_CONFIG_HOME}/starship" \
+    "${XDG_CONFIG_HOME}/superfile" \
     "${XDG_CONFIG_HOME}/tmux/plugins" \
+    "${XDG_CONFIG_HOME}/vim" \
+    "${XDG_CONFIG_HOME}/yazi" \
     "${XDG_CONFIG_HOME}/zsh" \
     "${XDG_DATA_HOME}/fonts" \
     "${XDG_STATE_HOME}"
@@ -1288,6 +1294,20 @@ install_external_scripts() {
   done
 
   printf "\nThey were installed to '%s'\n" "${HOME}/.local/bin/"
+}
+
+install_claude_code() {
+  _info "INSTALL CLAUDE CODE"
+
+  if [ "${SKIP_SYSTEM_PACKAGES}" == "1" ]; then
+    echo "Skipping, since this only runs when packages get installed"
+    return
+  fi
+
+  # The native installer handles already-installed upgrades; running again is
+  # a no-op or in-place upgrade. We use it instead of the npm package because
+  # Anthropic recommends the native installer and ships it first.
+  _curl https://claude.ai/install.sh | bash -s latest
 }
 
 install_configs() {
@@ -2200,6 +2220,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   install_gui_themes
   install_zsh_plugins
   install_external_scripts
+  install_claude_code
   install_configs
   configure_sudoers_entries
   configure_systemd_services
