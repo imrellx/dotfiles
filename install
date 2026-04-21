@@ -351,7 +351,7 @@ _package_install() {
   )
 
   local -a confirm_flag=()
-  [ "${PACKAGES_AUTO_CONFIRM}" == "1" ] && confirm_flag+=("${confirm_map[${manager}]}")
+  [ "${PACKAGES_AUTO_CONFIRM}" == "1" ] && [ -n "${confirm_map[${manager}]:-}" ] && confirm_flag+=("${confirm_map[${manager}]}")
 
   case "${manager}" in
   pacman)
