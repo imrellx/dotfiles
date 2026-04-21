@@ -1721,7 +1721,7 @@ EOF
     echo "${shell_path}" | sudo tee -a /etc/shells 1>/dev/null
   fi
 
-  [ "${SHELL: -3}" != "zsh" ] && chsh -s "${shell_path}"
+  [ "${SHELL: -3}" != "zsh" ] && sudo chsh -s "${shell_path}" "${USER}"
 
   # shellcheck disable=SC1091
   . "${XDG_CONFIG_HOME}/zsh/.zprofile" 1>/dev/null
