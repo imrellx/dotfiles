@@ -978,7 +978,7 @@ create_initial_dirs() {
     "${XDG_CONFIG_HOME}/sesh" \
     "${XDG_CONFIG_HOME}/starship" \
     "${XDG_CONFIG_HOME}/superfile" \
-    "${XDG_CONFIG_HOME}/tmux/plugins" \
+    "${XDG_CONFIG_HOME}/tmux" \
     "${XDG_CONFIG_HOME}/vim" \
     "${XDG_CONFIG_HOME}/yazi" \
     "${XDG_CONFIG_HOME}/zsh" \
@@ -1940,18 +1940,6 @@ install_programming_languages() {
   done
 }
 
-install_tmux_plugins() {
-  _info "INSTALL TMUX PLUGINS"
-
-  local plugin_path="${XDG_CONFIG_HOME}/tmux/plugins"
-  local tpm_path="${plugin_path}/tpm"
-
-  rm -rf "${tpm_path}"
-  git clone --depth 1 https://github.com/tmux-plugins/tpm "${tpm_path}"
-
-  "${tpm_path}/bin/install_plugins"
-}
-
 set_theme() {
   # Default to this theme as a fallback.
   local theme="flexoki-dark"
@@ -2274,7 +2262,6 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   create_gpg_key
   configure_git
   install_programming_languages
-  install_tmux_plugins
   set_theme "${@}"
   healthcheck
   completed_message
