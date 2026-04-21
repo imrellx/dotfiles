@@ -11,7 +11,7 @@ DOTFILES_PATH="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 
 # Trust the mise config shipped in this repo so every mise invocation
 # downstream of this script reads it without demanding interactive trust.
-export MISE_TRUSTED_CONFIG_PATHS="${DOTFILES_PATH}/.config/mise/config.toml"
+export MISE_TRUSTED_CONFIG_PATHS="${MISE_TRUSTED_CONFIG_PATHS:+${MISE_TRUSTED_CONFIG_PATHS}:}${DOTFILES_PATH}/.config/mise/config.toml"
 
 # shellcheck disable=SC1091
 . "${DOTFILES_PATH}/bootstrap"
@@ -1019,6 +1019,17 @@ create_initial_dirs() {
   fi
 }
 
+install_mise_config_symlink() {
+  # mise's `mise use --global` writes to ~/.config/mise/config.toml during
+  # install_packages. Without the symlink already in place, those writes
+  # land in a real file that install_configs later replaces with the symlink,
+  # silently dropping the version pins. Pre-create just this one symlink so
+  # the rest of install_configs can stay in its original spot (after
+  # install_packages), avoiding /etc/* conflicts with not-yet-installed
+  # packages like pacman-contrib.
+  ln -fns "${DOTFILES_PATH}/.config/mise/config.toml" "${XDG_CONFIG_HOME}/mise/config.toml"
+}
+
 install_packages() {
   _info "INSTALL PACKAGES"
 
@@ -1721,7 +1732,7 @@ EOF
     echo "${shell_path}" | sudo tee -a /etc/shells 1>/dev/null
   fi
 
-  [ "${SHELL: -3}" != "zsh" ] && sudo chsh -s "${shell_path}" "${USER}"
+  [[ "${SHELL:-}" != *zsh ]] && sudo chsh -s "${shell_path}" "${USER:-$(whoami)}"
 
   # shellcheck disable=SC1091
   . "${XDG_CONFIG_HOME}/zsh/.zprofile" 1>/dev/null
@@ -2242,13 +2253,14 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   check_install_config
   ensure_sudo_works
   create_initial_dirs
-  install_configs
+  install_mise_config_symlink
   install_packages
   install_fonts
   install_gui_themes
   install_zsh_plugins
   install_external_scripts
   install_claude_code
+  install_configs
   configure_sudoers_entries
   configure_systemd_services
   configure_system_configs
