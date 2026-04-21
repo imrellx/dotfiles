@@ -12,6 +12,10 @@ window-padding-x = 4
 window-padding-y = 2
 window-padding-balance = true
 
+# Left Option = Alt on macOS so tmux M-* binds fire; right Option stays native
+# for special characters. No-op on Linux (macos-* keys are silently ignored).
+macos-option-as-alt = left
+
 # Load theme.
 config-file = ?theme
 
