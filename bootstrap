@@ -287,7 +287,7 @@ ensure_sudo_works() {
     _package_install "sudo"
   fi
 
-  if sudo --validate >/dev/null 2>&1; then
+  if sudo -n true >/dev/null 2>&1; then
     echo "Confirmed, it's working"
   else
     local sudoers_dir="/etc/sudoers.d"
