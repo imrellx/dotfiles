@@ -21,7 +21,7 @@ export C_CYAN=$'\e[1;36;1m'
 export C_WHITE=$'\e[1;37;1m'
 export C_RESET=$'\e[0m'
 
-export PACKAGES_CRITICAL=("less" "git" "nano")
+export PACKAGES_CRITICAL=("less" "git" "nano" "gnupg")
 
 export LOCAL=
 
