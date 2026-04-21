@@ -2242,13 +2242,13 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   check_install_config
   ensure_sudo_works
   create_initial_dirs
+  install_configs
   install_packages
   install_fonts
   install_gui_themes
   install_zsh_plugins
   install_external_scripts
   install_claude_code
-  install_configs
   configure_sudoers_entries
   configure_systemd_services
   configure_system_configs
