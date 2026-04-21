@@ -21,7 +21,7 @@ export C_CYAN=$'\e[1;36;1m'
 export C_WHITE=$'\e[1;37;1m'
 export C_RESET=$'\e[0m'
 
-export PACKAGES_CRITICAL=("less" "git" "nano")
+export PACKAGES_CRITICAL=("less" "git" "nano" "gnupg")
 
 export LOCAL=
 
@@ -287,7 +287,7 @@ ensure_sudo_works() {
     _package_install "sudo"
   fi
 
-  if sudo --validate >/dev/null 2>&1; then
+  if sudo -n true >/dev/null 2>&1; then
     echo "Confirmed, it's working"
   else
     local sudoers_dir="/etc/sudoers.d"

@@ -9,6 +9,10 @@ DOTFILES_PATH_CONFIGURED="${DOTFILES_PATH:-}"
 [ -z "${DOTFILES_PATH}" ] && FIRST_RUN=1
 DOTFILES_PATH="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 
+# Trust the mise config shipped in this repo so every mise invocation
+# downstream of this script reads it without demanding interactive trust.
+export MISE_TRUSTED_CONFIG_PATHS="${DOTFILES_PATH}/.config/mise/config.toml"
+
 # shellcheck disable=SC1091
 . "${DOTFILES_PATH}/bootstrap"
 
@@ -351,7 +355,7 @@ _package_install() {
   )
 
   local -a confirm_flag=()
-  [ "${PACKAGES_AUTO_CONFIRM}" == "1" ] && confirm_flag+=("${confirm_map[${manager}]}")
+  [ "${PACKAGES_AUTO_CONFIRM}" == "1" ] && [ -n "${confirm_map[${manager}]:-}" ] && confirm_flag+=("${confirm_map[${manager}]}")
 
   case "${manager}" in
   pacman)
@@ -1201,7 +1205,7 @@ install_fonts() {
   local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/IBMPlexMono.zip"
   local font_tmp="/tmp/ibmplexmono"
   local font_zip="/tmp/ibmplexmono.zip"
-  local font_filename="IBMPlexMonoNerdFontMono-Regular.ttf"
+  local font_filename="BlexMonoNerdFontMono-Regular.ttf"
   local macos_font_path="${HOME}/Library/Fonts"
   local linux_font_path="${XDG_DATA_HOME}/fonts"
   local font_path=
@@ -1222,7 +1226,7 @@ install_fonts() {
     _curl "${font_url}" -o "${font_zip}"
     unzip "${font_zip}" -d "${font_tmp}"
 
-    cp "${font_tmp}"/IBMPlexMonoNerdFont*.ttf "${font_path}"
+    cp "${font_tmp}"/BlexMonoNerdFont*.ttf "${font_path}"
 
     # Update font cache on native Linux.
     [[ "${OS_TYPE}" = "linux" ]] && fc-cache -fv
@@ -1717,7 +1721,7 @@ EOF
     echo "${shell_path}" | sudo tee -a /etc/shells 1>/dev/null
   fi
 
-  [ "${SHELL: -3}" != "zsh" ] && chsh -s "${shell_path}"
+  [ "${SHELL: -3}" != "zsh" ] && sudo chsh -s "${shell_path}" "${USER}"
 
   # shellcheck disable=SC1091
   . "${XDG_CONFIG_HOME}/zsh/.zprofile" 1>/dev/null
