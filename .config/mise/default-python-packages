@@ -1,0 +1,4 @@
+# Packages installed into every Python version mise manages.
+# Kept empty by convention — Python tooling here follows uv-first
+# (see CLAUDE.md). Add packages only when they must live inside the
+# runtime (e.g. pynvim for Neovim's Python provider).
