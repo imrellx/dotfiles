@@ -49,7 +49,7 @@ export DEFAULT_MISE_DEBIAN=(
   "lazygit"
   "neovim"
   "ripgrep"
-  "sesh"
+  "aqua:joshmedeski/sesh"
   "shellcheck"
   "shfmt"
   "starship"
