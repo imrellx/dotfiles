@@ -104,7 +104,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if [[ "${PACKAGES_AUR+x}" ]]; then
     [ -z "${PACKAGES_AUR}" ] && PACKAGES_AUR=()
   else
-    PACKAGES_AUR=()
+    PACKAGES_AUR=("${DEFAULT_PACKAGES_AUR[@]}")
   fi
 
   if [[ "${PACKAGES_AUR_EXTRAS+x}" ]]; then
