@@ -11,7 +11,7 @@ DOTFILES_PATH="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 
 # Trust the mise config shipped in this repo so every mise invocation
 # downstream of this script reads it without demanding interactive trust.
-export MISE_TRUSTED_CONFIG_PATHS="${DOTFILES_PATH}/.config/mise/config.toml"
+export MISE_TRUSTED_CONFIG_PATHS="${MISE_TRUSTED_CONFIG_PATHS:+${MISE_TRUSTED_CONFIG_PATHS}:}${DOTFILES_PATH}/.config/mise/config.toml"
 
 # shellcheck disable=SC1091
 . "${DOTFILES_PATH}/bootstrap"
@@ -1721,7 +1721,7 @@ EOF
     echo "${shell_path}" | sudo tee -a /etc/shells 1>/dev/null
   fi
 
-  [ "${SHELL: -3}" != "zsh" ] && sudo chsh -s "${shell_path}" "${USER}"
+  [[ "${SHELL:-}" != *zsh ]] && sudo chsh -s "${shell_path}" "${USER:-$(whoami)}"
 
   # shellcheck disable=SC1091
   . "${XDG_CONFIG_HOME}/zsh/.zprofile" 1>/dev/null
