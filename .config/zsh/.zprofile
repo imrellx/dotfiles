@@ -9,7 +9,8 @@
 . "${XDG_CONFIG_HOME:-"${HOME}/.config"}/zsh/.envs"
 
 # Allows gpg-agent to prompt for passphrase (useful for signing commits).
-GPG_TTY="$(tty)"
+# `tty` exits non-zero in non-tty contexts (e.g. sourced by the installer); tolerate that.
+GPG_TTY="$(tty 2>/dev/null || true)"
 export GPG_TTY
 
 # Add colors to less and man.

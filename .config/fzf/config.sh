@@ -3,4 +3,6 @@ export FZF_DEFAULT_OPTS="--ansi --info=inline-right --layout=reverse --border=no
 export FZF_CTRL_T_OPTS="--height=100% --preview='bat --color=always {}'"
 
 # shellcheck disable=SC1091
-. "${XDG_CONFIG_HOME}/fzf/theme.sh"
+if [ -f "${XDG_CONFIG_HOME}/fzf/theme.sh" ]; then
+  . "${XDG_CONFIG_HOME}/fzf/theme.sh"
+fi
