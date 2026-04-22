@@ -64,8 +64,8 @@ Pi is installed via `MISE_LANGUAGES` with the `npm:` backend: `npm:@mariozechner
 Nickjj's theme-switching architecture, retained and extended. The main config for each themed tool (ghostty, tmux, nvim, btop, fzf, niri, waybar, mako, walker, swaylock, zathura, gtk) references an externally-symlinked theme file. `set_theme()` (install:2010) relinks those files from `_themes/<active>/<file>` to their runtime paths; `dot-theme-set` (`.local/bin/dot-theme-set`) picks which active theme to use.
 
 **Flexoki Dark**:
-Default active theme in Phase 1. Authored as `_themes/flexoki-dark/` by copying `_themes/tokyonight-moon/` and translating palette values to the Flexoki palette (`#100F0F` bg, `#CECDC3` fg, etc. — full palette sourced from `ivn-term/config/ghostty/config`).
-_Avoid_: Flexoki, flexoki (without the mode suffix — we may add a light variant in Phase 2).
+Default active theme in Phase 1. Authored as `_themes/flexoki-dark/` by copying `_themes/tokyonight-moon/` and translating palette values to the Flexoki palette (`#100F0F` bg, `#CECDC3` fg, etc. — full palette sourced from `ivn-term/config/ghostty/config`). GTK portion of the theme is built from `imrellx/Colloid-gtk-theme` (our fork of `vinceliuice/Colloid-gtk-theme`) using a custom `_color-palette-flexoki.scss` + `--tweaks flexoki` scheme; the built theme is hosted as a release asset on the fork and pulled via `install_gui_themes()` like the other two themes.
+_Avoid_: Flexoki, flexoki (without the mode suffix — we may add a light variant later).
 
 ## Relationships
 

@@ -1264,6 +1264,11 @@ install_gui_themes() {
     "https://github.com/user-attachments/files/26270135/Gruvbox-BL-LB-dark-Medium.zip" \
     "Gruvbox-BL-LB-Dark-Medium"
 
+  _theme_download \
+    "flexoki-dark" \
+    "https://github.com/imrellx/Colloid-gtk-theme/releases/download/flexoki-v1/flexoki-dark-colloid.zip" \
+    "Colloid-Dark-Flexoki"
+
   printf "\nThey were installed to '%s'\n" "${XDG_DATA_HOME}/themes/"
 }
 
