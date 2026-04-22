@@ -44,6 +44,7 @@ export DEFAULT_MISE_DEBIAN=(
   "eza"
   "fd"
   "fzf"
+  "aqua:charmbracelet/gum"
   "helix"
   "jq"
   "lazygit"
@@ -56,4 +57,5 @@ export DEFAULT_MISE_DEBIAN=(
   "superfile"
   "yazi"
   "yq"
+  "zoxide"
 )

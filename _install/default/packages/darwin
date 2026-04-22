@@ -18,6 +18,7 @@ export DEFAULT_PACKAGES_BREW=(
   "git"
   "git-delta"
   "gnupg"
+  "gum"
   "helix"
   "imagemagick"
   "jq"
@@ -42,6 +43,7 @@ export DEFAULT_PACKAGES_BREW=(
   "xz"
   "yazi"
   "yq"
+  "zoxide"
   "zsh"
 )
 
