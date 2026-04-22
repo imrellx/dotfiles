@@ -20,6 +20,7 @@ export DEFAULT_PACKAGES_PACMAN=(
   "git-delta"
   "gnupg"
   "go-yq"
+  "gum"
   "helix"
   "imagemagick"
   "inotify-tools"
@@ -51,6 +52,7 @@ export DEFAULT_PACKAGES_PACMAN=(
   "whois"
   "wl-clipboard"
   "zip"
+  "zoxide"
   "zsh"
 )
 

@@ -5,19 +5,16 @@
 # shellcheck disable=SC1091
 . "${XDG_CONFIG_HOME:-"${HOME}/.config"}/zsh/.xdg.local"
 
-# Add all local binaries to the system path and make sure they are first.
-export PATH="${HOME}/.local/bin:${HOME}/.local/bin/local:${PATH}"
+# shellcheck disable=SC1091
+. "${XDG_CONFIG_HOME:-"${HOME}/.config"}/zsh/.envs"
 
-# Confiure Mise (programming language run-time manager).
-export PATH="${XDG_DATA_HOME}/mise/shims:${PATH}"
+# Allows gpg-agent to prompt for passphrase (useful for signing commits).
+GPG_TTY="$(tty)"
+export GPG_TTY
 
-# Default programs to run.
-export EDITOR="nvim"
-export DIFFPROG="nvim -d"
-
-# Add colors to the less and man commands.
+# Add colors to less and man.
 export LESS=-R
-LESS_TERMCAP_ue="$(printf '%b' '[0m')"
+LESS_TERMCAP_ue="$(printf '%b' '[0m')"
 export LESS_TERMCAP_ue
 export LESS_TERMCAP_mb=$'\e[1;31mm'   # begin blinking
 export LESS_TERMCAP_md=$'\e[1;36m'    # begin bold
@@ -27,21 +24,11 @@ export LESS_TERMCAP_me=$'\e[0m'       # end mode
 export LESS_TERMCAP_ue=$'\e[0m'       # end underline
 export LESS_TERMCAP_se=$'\e[0m'       # end standout-mode
 
-# Configure GPG.
+# GPG / pass / delta
 export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
-
-# Configure pass, Docker Desktop on Linux uses this tool and while I have used
-# it for years in the past, I've moved to using KeePassXC.
 export PASSWORD_STORE_DIR="${XDG_CONFIG_HOME}/password-store"
-
-# Configure delta (diffs) defaults.
-# https://dandavison.github.io/delta/environment-variables.html
 export DELTA_FEATURES="diff-so-fancy"
 
-# Configure zsh-vi-mode.
-export ZVM_NORMAL_MODE_CURSOR="${ZVM_CURSOR_BLOCK:-}"
-export ZVM_INSERT_MODE_CURSOR="${ZVM_CURSOR_BEAM:-}"
-
-# Load local settings if they exist.
+# Local overrides.
 # shellcheck disable=SC1091
-if [ -f "${XDG_CONFIG_HOME}/zsh/.zprofile.local" ]; then . "${XDG_CONFIG_HOME}/zsh/.zprofile.local"; fi
+[ -f "${XDG_CONFIG_HOME}/zsh/.zprofile.local" ] && . "${XDG_CONFIG_HOME}/zsh/.zprofile.local"

@@ -1,0 +1,39 @@
+# shellcheck shell=bash
+
+# Editor
+export EDITOR=nvim
+export VISUAL=nvim
+
+# PATH additions (last call lands earliest in $PATH)
+_prepend_path() {
+  case ":${PATH}:" in
+    *:"$1":*) ;;
+    *) export PATH="$1:${PATH}" ;;
+  esac
+}
+
+_prepend_path "${HOME}/.local/bin/local"
+_prepend_path "${HOME}/.local/bin"
+_prepend_path "${XDG_DATA_HOME}/mise/shims"
+
+unset -f _prepend_path
+
+# Homebrew (macOS Apple Silicon and Intel; no linuxbrew branch)
+if [ -d "/opt/homebrew" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -d "/usr/local/Homebrew" ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+export HOMEBREW_NO_ANALYTICS=1
+
+# zsh-autosuggestions
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
+# zsh-vi-mode cursor shapes
+export ZVM_NORMAL_MODE_CURSOR="${ZVM_CURSOR_BLOCK:-}"
+export ZVM_INSERT_MODE_CURSOR="${ZVM_CURSOR_BEAM:-}"
+
+# fzf defaults (keybindings wired in .inits after vi-mode init)
+# shellcheck disable=SC1091
+[ -f "${XDG_CONFIG_HOME}/fzf/config.sh" ] && . "${XDG_CONFIG_HOME}/fzf/config.sh"

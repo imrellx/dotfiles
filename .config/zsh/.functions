@@ -1,0 +1,305 @@
+# shellcheck shell=bash
+
+# ---------------------------------------------------------------------------
+# General utilities
+# ---------------------------------------------------------------------------
+
+# mkcd: create a directory and cd into it
+mkcd() {
+  mkdir -p "$1" && cd "$1" || return
+}
+
+# extract: universal archive extractor
+extract() {
+  if [ -z "$1" ]; then
+    echo "Usage: extract <file>"
+    return 1
+  fi
+  if [ ! -f "$1" ]; then
+    echo "'$1' is not a valid file"
+    return 1
+  fi
+  case "$1" in
+    *.tar.bz2) tar xjf "$1" ;;
+    *.tar.gz)  tar xzf "$1" ;;
+    *.tar.xz)  tar xJf "$1" ;;
+    *.tar.zst) tar --zstd -xf "$1" ;;
+    *.bz2)     bunzip2 "$1" ;;
+    *.rar)     unrar x "$1" ;;
+    *.gz)      gunzip "$1" ;;
+    *.tar)     tar xf "$1" ;;
+    *.tbz2)    tar xjf "$1" ;;
+    *.tgz)     tar xzf "$1" ;;
+    *.zip)     unzip "$1" ;;
+    *.Z)       uncompress "$1" ;;
+    *.7z)      7z x "$1" ;;
+    *)         echo "'$1' — unknown archive format" ;;
+  esac
+}
+
+# port: check what's running on a given port
+port() {
+  if [ -z "$1" ]; then
+    echo "Usage: port <number>"
+    return 1
+  fi
+  lsof -i :"$1"
+}
+
+# ---------------------------------------------------------------------------
+# Disk & media tools
+# ---------------------------------------------------------------------------
+
+# Write iso file to sd card
+iso2sd() {
+  if (( $# < 1 )); then
+    echo "Usage: iso2sd <input_file> [output_device]"
+    echo "Example: iso2sd ~/Downloads/ubuntu-25.04-desktop-amd64.iso /dev/sda"
+    return 1
+  fi
+
+  local iso="$1"
+  local drive="$2"
+
+  if [[ -z $drive ]]; then
+    echo "No drive selected"
+    return 1
+  fi
+
+  sudo dd bs=4M status=progress oflag=sync if="$iso" of="$drive"
+  sudo eject "$drive"
+}
+
+# Format an entire drive for a single partition using exFAT
+format-drive() {
+  if (( $# != 2 )); then
+    echo "Usage: format-drive <device> <name>"
+    echo "Example: format-drive /dev/sda 'My Stuff'"
+    echo -e "\nAvailable drives:"
+    lsblk -d -o NAME -n | awk '{print "/dev/"$1}'
+  else
+    echo "WARNING: This will completely erase all data on $1 and label it '$2'."
+    read -rp "Are you sure you want to continue? (y/N): " confirm
+
+    if [[ $confirm =~ ^[Yy]$ ]]; then
+      sudo wipefs -a "$1"
+      sudo dd if=/dev/zero of="$1" bs=1M count=100 status=progress
+      sudo parted -s "$1" mklabel gpt
+      sudo parted -s "$1" mkpart primary 1MiB 100%
+      sudo parted -s "$1" set 1 msftdata on
+
+      partition="$([[ $1 == *"nvme"* ]] && echo "${1}p1" || echo "${1}1")"
+      sudo partprobe "$1" || true
+      sudo udevadm settle || true
+
+      sudo mkfs.exfat -n "$2" "$partition"
+
+      echo "Drive $1 formatted as exFAT and labeled '$2'."
+    fi
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# Video & image transcoding
+# ---------------------------------------------------------------------------
+
+# Transcode a video to a good-balance 1080p that's great for sharing online
+transcode-video-1080p() {
+  ffmpeg -i "$1" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${1%.*}-1080p.mp4"
+}
+
+# Transcode a video to a good-balance 4K that's great for sharing online
+transcode-video-4K() {
+  ffmpeg -i "$1" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${1%.*}-optimized.mp4"
+}
+
+# Transcode any image to JPG image that's great for shrinking wallpapers
+img2jpg() {
+  img="$1"
+  shift
+
+  magick "$img" "$@" -quality 95 -strip "${img%.*}-converted.jpg"
+}
+
+# Transcode any image to a small JPG (max 1080px wide) that's great for sharing online
+img2jpg-small() {
+  img="$1"
+  shift
+
+  magick "$img" "$@" -resize 1080x\> -quality 95 -strip "${img%.*}-small.jpg"
+}
+
+# Transcode any image to a medium JPG (max 1800px wide) that's great for sharing online
+img2jpg-medium() {
+  img="$1"
+  shift
+
+  magick "$img" "$@" -resize 1800x\> -quality 95 -strip "${img%.*}-medium.jpg"
+}
+
+# Transcode any image to compressed-but-lossless PNG
+img2png() {
+  img="$1"
+  shift
+
+  magick "$img" "$@" -strip -define png:compression-filter=5 \
+    -define png:compression-level=9 \
+    -define png:compression-strategy=1 \
+    -define png:exclude-chunk=all \
+    "${img%.*}-optimized.png"
+}
+
+# ---------------------------------------------------------------------------
+# SSH port forwarding
+# ---------------------------------------------------------------------------
+
+fip() {
+  (( $# < 2 )) && echo "Usage: fip <host> <port1> [port2] ..." && return 1
+  local host="$1"
+  shift
+  for port in "$@"; do
+    ssh -f -N -L "$port:localhost:$port" "$host" && echo "Forwarding localhost:$port -> $host:$port"
+  done
+}
+
+dip() {
+  (( $# == 0 )) && echo "Usage: dip <port1> [port2] ..." && return 1
+  for port in "$@"; do
+    pkill -f "ssh.*-L $port:localhost:$port" && echo "Stopped forwarding port $port" || echo "No forwarding on port $port"
+  done
+}
+
+lip() {
+  pgrep -af "ssh.*-L [0-9]+:localhost:[0-9]+" || echo "No active forwards"
+}
+
+# ---------------------------------------------------------------------------
+# Tmux layouts
+# ---------------------------------------------------------------------------
+
+# Create a Tmux Dev Layout with editor, ai, and terminal
+# Usage: tdl <c|cx|codex|other_ai> [<second_ai>]
+tdl() {
+  [[ -z $1 ]] && { echo "Usage: tdl <c|cx|codex|other_ai> [<second_ai>]"; return 1; }
+  [[ -z $TMUX ]] && { echo "You must start tmux to use tdl."; return 1; }
+
+  local current_dir="${PWD}"
+  local editor_pane ai_pane ai2_pane
+  local ai="$1"
+  local ai2="$2"
+
+  editor_pane="$TMUX_PANE"
+
+  tmux rename-window -t "$editor_pane" "$(basename "$current_dir")"
+
+  tmux split-window -v -p 15 -t "$editor_pane" -c "$current_dir"
+
+  ai_pane=$(tmux split-window -h -p 30 -t "$editor_pane" -c "$current_dir" -P -F '#{pane_id}')
+
+  if [[ -n $ai2 ]]; then
+    ai2_pane=$(tmux split-window -v -t "$ai_pane" -c "$current_dir" -P -F '#{pane_id}')
+    tmux send-keys -t "$ai2_pane" "$ai2" C-m
+  fi
+
+  tmux send-keys -t "$ai_pane" "$ai" C-m
+  tmux send-keys -t "$editor_pane" "$EDITOR ." C-m
+  tmux select-pane -t "$editor_pane"
+}
+
+# Create multiple tdl windows with one per subdirectory in the current directory
+# Usage: tdlm <c|cx|codex|other_ai> [<second_ai>]
+tdlm() {
+  [[ -z $1 ]] && { echo "Usage: tdlm <c|cx|codex|other_ai> [<second_ai>]"; return 1; }
+  [[ -z $TMUX ]] && { echo "You must start tmux to use tdlm."; return 1; }
+
+  local ai="$1"
+  local ai2="$2"
+  local base_dir="$PWD"
+  local first=true
+
+  tmux rename-session "$(basename "$base_dir" | tr '.:' '--')"
+
+  for dir in "$base_dir"/*/; do
+    [[ -d $dir ]] || continue
+    local dirpath="${dir%/}"
+
+    if $first; then
+      tmux send-keys -t "$TMUX_PANE" "cd '$dirpath' && tdl $ai $ai2" C-m
+      first=false
+    else
+      local pane_id
+      pane_id=$(tmux new-window -c "$dirpath" -P -F '#{pane_id}')
+      tmux send-keys -t "$pane_id" "tdl $ai $ai2" C-m
+    fi
+  done
+}
+
+# Create a multi-pane swarm layout with the same command started in each pane (great for AI)
+# Usage: tsl <pane_count> <command>
+tsl() {
+  [[ -z $1 || -z $2 ]] && { echo "Usage: tsl <pane_count> <command>"; return 1; }
+  [[ -z $TMUX ]] && { echo "You must start tmux to use tsl."; return 1; }
+
+  local count="$1"
+  local cmd="$2"
+  local current_dir="${PWD}"
+  local -a panes
+
+  tmux rename-window -t "$TMUX_PANE" "$(basename "$current_dir")"
+
+  panes+=("$TMUX_PANE")
+
+  while (( ${#panes[@]} < count )); do
+    local new_pane
+    local split_target="${panes[-1]}"
+    new_pane=$(tmux split-window -h -t "$split_target" -c "$current_dir" -P -F '#{pane_id}')
+    panes+=("$new_pane")
+    tmux select-layout -t "${panes[0]}" tiled
+  done
+
+  for pane in "${panes[@]}"; do
+    tmux send-keys -t "$pane" "$cmd" C-m
+  done
+
+  tmux select-pane -t "${panes[0]}"
+}
+
+# ---------------------------------------------------------------------------
+# Git helpers
+# ---------------------------------------------------------------------------
+
+# Create a new worktree and branch from within current git directory
+ga() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: ga [branch name]"
+    return 1
+  fi
+
+  local branch="$1"
+  local base
+  base="$(basename "$PWD")"
+  local path="../${base}--${branch}"
+
+  git worktree add -b "$branch" "$path"
+  mise trust "$path"
+  cd "$path" || return
+}
+
+# Remove worktree and branch from within active worktree directory
+gwr() {
+  if gum confirm "Remove worktree and branch?"; then
+    local cwd base branch root worktree
+
+    cwd="$(pwd)"
+    worktree="$(basename "$cwd")"
+
+    root="${worktree%%--*}"
+    branch="${worktree#*--}"
+
+    if [[ "$root" != "$worktree" ]]; then
+      cd "../$root" || return
+      git worktree remove "$cwd" --force || return 1
+      git branch -D "$branch"
+    fi
+  fi
+}

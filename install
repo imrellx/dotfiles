@@ -1680,52 +1680,15 @@ configure_shell() {
   done
 
   local zprofile_path="${DOTFILES_PATH}/.config/zsh/.zprofile.local"
-  local aliases_path="${DOTFILES_PATH}/.config/zsh/.aliases.local"
 
   if ! grep -q "^export DOTFILES_PATH=.*$" "${zprofile_path}" 2>/dev/null; then
     printf '\nexport DOTFILES_PATH="%s"\n' "${DOTFILES_PATH}" >>"${zprofile_path}"
   fi
 
-  if [ "${OS_TYPE}" == "darwin" ]; then
-    if ! grep -q "HOMEBREW_NO_ANALYTICS" "${zprofile_path}" 2>/dev/null; then
-      printf '\nexport HOMEBREW_NO_ANALYTICS=1\n' >>"${zprofile_path}"
-    fi
-
-    if ! grep -q "eval.*homebrew.*shellenv" "${zprofile_path}" 2>/dev/null; then
-      # shellcheck disable=SC2178
-      local prefix="/opt/homebrew"
-      # shellcheck disable=SC2178
-      [[ "${CPU_ARCH}" == "x86_64" ]] && prefix="/usr/local"
-
-      # shellcheck disable=SC2016,SC2128
-      printf "\neval \"\$(%s/bin/brew shellenv)\"\n" "${prefix}" >>"${zprofile_path}"
-    fi
-
-    if ! grep -q '^alias ls="ls -G"' "${aliases_path}" 2>/dev/null; then
-      cat <<EOF >>"${aliases_path}"
-
-alias ls="ls -G"
-alias grep="grep -G"
-alias fgrep="fgrep -G"
-alias egrep="egrep -G"
-EOF
-    fi
-  else
-    if ! grep -q 'alias ls="ls --color=auto"' "${aliases_path}" 2>/dev/null; then
-      cat <<EOF >>"${aliases_path}"
-
-alias ls="ls --color=auto"
-alias grep="grep --color=auto"
-alias fgrep="fgrep --color=auto"
-alias egrep="egrep --color=auto"
-EOF
-    fi
-
-    # Is a Linux GUI supported?
-    if [ "${GUI_ENABLED}" == "1" ]; then
-      if ! grep -q "^if uwsm check may-start.*$" "${zprofile_path}" 2>/dev/null; then
-        printf "\n# Start niri after logging in.\nif uwsm check may-start; then exec uwsm start -- niri.desktop; fi\n" >>"${zprofile_path}"
-      fi
+  # Linux GUI launcher — brew + homebrew-analytics now live in .config/zsh/.envs.
+  if [ "${OS_TYPE}" != "darwin" ] && [ "${GUI_ENABLED}" == "1" ]; then
+    if ! grep -q "^if uwsm check may-start.*$" "${zprofile_path}" 2>/dev/null; then
+      printf "\n# Start niri after logging in.\nif uwsm check may-start; then exec uwsm start -- niri.desktop; fi\n" >>"${zprofile_path}"
     fi
   fi
 

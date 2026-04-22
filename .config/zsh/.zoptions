@@ -1,0 +1,48 @@
+# shellcheck shell=bash
+
+# Modern completion system with globdots for hidden files
+autoload -U compinit
+compinit
+_comp_options+=(globdots)
+
+# Vi keybindings
+bindkey -v
+
+# History
+# shellcheck disable=SC2034
+HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh_history"
+# shellcheck disable=SC2034
+HISTSIZE=10000
+# shellcheck disable=SC2034
+SAVEHIST=10000
+setopt INC_APPEND_HISTORY    # Write immediately so history survives crashes.
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
+setopt share_history
+setopt EXTENDED_HISTORY
+
+# General behaviour
+setopt extended_glob
+setopt correct
+setopt auto_cd
+setopt CHASE_LINKS
+setopt no_beep
+setopt COMBINING_CHARS
+setopt INTERACTIVE_COMMENTS
+
+# Completion menu behaviour
+setopt MENU_COMPLETE
+setopt AUTO_MENU
+setopt COMPLETE_IN_WORD
+setopt ALWAYS_TO_END
+
+# Completion zstyles (lifted from ivn-term)
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=* l:|=*'
+zstyle ':completion:*' match-hidden-files off
+zstyle ':completion:*' list-prompt ''
+zstyle ':completion:*' select-prompt ''
+zstyle ':completion:*' file-list all
+# shellcheck disable=SC2296
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
