@@ -1,34 +1,72 @@
 # shellcheck shell=bash
 
-alias ll="ls -alF"
-alias la="ls -A"
-alias l="ls -CF"
+# eza (modern ls)
+alias ls='eza -lh --group-directories-first --icons=auto'
+alias ll='eza -la --git --icons'
+alias la='eza -a'
+alias lt='eza --tree --level=2'
 
+# Fat eza for explicit invocations (keeps detailed long-form output)
 alias eza="EZA_ICON_SPACING=2 eza --long --all --octal-permissions --group --group-directories-first --time-style long-iso --header --icons auto"
 
+# fzf
+alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
+alias eff='$EDITOR "$(ff)"'
+# shellcheck disable=SC2139
+alias pf="fzf ${FZF_CTRL_T_OPTS}"
+
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# Docker
+alias dk='docker'
+alias dkc='docker compose'
+alias drun='docker container run --rm -it -v "${PWD}":/app -w /app'
+
+# Editor
+alias v='nvim'
+alias vi='nvim'
+n() { if [[ $# -eq 0 ]]; then nvim .; else nvim "$@"; fi; }
+
+# AI tools
+alias cx='printf "\033[2J\033[3J\033[H" && claude --allow-dangerously-skip-permissions'
+
+# Tmux
+alias t='tmux attach || tmux new -s Work'
+alias ta='tmux attach'
+alias tl='tmux list-sessions'
+alias tn='tmux new-session -s'
+
+# Misc
+if command -v bat >/dev/null 2>&1; then
+  alias cat='bat --style=plain'
+fi
+alias grep='grep --color=auto'
 alias diff="diff --color -u"
 
+# Shell / dotfiles
 alias sz='. ${ZDOTDIR}/.zprofile && . ${ZDOTDIR}/.zshrc'
 alias SZ='tmux-shell-cmd --kill "sz"'
 alias dt='cd ${DOTFILES_PATH} && nvim .'
 alias lz='cd ${XDG_DATA_HOME}/nvim/lazy/LazyVim && nvim .'
 alias lp='cd ${XDG_DATA_HOME}/nvim/lazy && nvim .'
 
+# File permissions
 alias 755d="find . -type d -exec chmod 755 {} \;"
 alias 644f="find . -type f -exec chmod 644 {} \;"
 
+# Nvim spell/swap
 alias vss='sort -u ${XDG_CONFIG_HOME}/nvim/spell/en.utf-8.add -o ${XDG_CONFIG_HOME}/nvim/spell/en.utf-8.add'
 alias vdt='rm ${XDG_STATE_HOME}/nvim/swap/%*'
 
-# shellcheck disable=SC2139
-alias pf="fzf ${FZF_CTRL_T_OPTS}"
-
+# Git
 alias gi="git init && git symbolic-ref HEAD refs/heads/main"
 alias gcl="git diff --name-only --diff-filter=U"
 alias ge="rg '[\p{Emoji}--\p{Ascii}]'"
 
-alias drun='docker container run --rm -it -v "${PWD}":/app -w /app'
-
+# Dev tools
 alias k="kubectl"
 alias tf="terraform"
 alias ymp3="yt-dlp --embed-metadata --extract-audio --audio-format mp3"
