@@ -124,6 +124,18 @@ window-rule {
     min-height 300
 }
 
+// TUIs created via dot-tui-install. Float vs tile is chosen at install time
+// and encoded in the app-id.
+window-rule {
+    match app-id=r#"^TUI\.float$"#
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"^TUI\.tile$"#
+    open-floating false
+}
+
 window-rule {
     match app-id=r#"^KeePassXC$"#
 
