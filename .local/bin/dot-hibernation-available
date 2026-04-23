@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-hibernation-available
+
+# Returns 0 if swap is sized for a hibernation image AND the kernel was booted
+# with a resume= parameter pointing at that swap.
+
+# Check if hibernation is supported
+if [[ ! -f /sys/power/image_size ]]; then
+  exit 1
+fi
+
+# Sum all swap sizes (excluding zram)
+SWAPSIZE_KB=$(awk '!/Filename|zram/ {sum += $3} END {print sum+0}' /proc/swaps)
+SWAPSIZE=$((1024 * ${SWAPSIZE_KB:-0}))
+
+HIBERNATION_IMAGE_SIZE=$(cat /sys/power/image_size)
+
+# rewritten: upstream checks `[[ -f /etc/mkinitcpio.conf.d/omarchy_resume.conf ]]`
+# as a proxy for "resume hook is in the initramfs." This dotfiles repo does not ship
+# omarchy-hibernation-setup, so that file is never created here. Check the actual
+# boot state instead: kernel cmdline carries resume=.
+if ((SWAPSIZE > HIBERNATION_IMAGE_SIZE)) && grep -q "resume=" /proc/cmdline; then
+  exit 0
+else
+  exit 1
+fi

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-battery-monitor
+
+# Designed to be run by a systemd timer every 30 seconds and alert if battery is low.
+
+BATTERY_THRESHOLD=10
+NOTIFICATION_FLAG="/run/user/$UID/dot_battery_notified"
+BATTERY_LEVEL=$(dot-battery-remaining)
+BATTERY_STATE=$(upower -i "$(upower -e | grep 'BAT' | head -n1)" | grep -E "state" | awk '{print $2}')
+
+send_notification() {
+  notify-send -u critical "󱐋 Time to recharge!" "Battery is down to ${1}%" -i battery-caution -t 30000
+  # dropped: `omarchy-hook battery-low "$1"`. Hooks are part of the update orchestrator
+  # lifecycle skipped per PRD-0003 inventory, so the call has no receiver in this fleet.
+}
+
+if [[ -n $BATTERY_LEVEL && $BATTERY_LEVEL =~ ^[0-9]+$ ]]; then
+  if [[ $BATTERY_STATE == "discharging" ]] && ((BATTERY_LEVEL <= BATTERY_THRESHOLD)); then
+    if [[ ! -f $NOTIFICATION_FLAG ]]; then
+      send_notification "$BATTERY_LEVEL"
+      touch "$NOTIFICATION_FLAG"
+    fi
+  else
+    rm -f "$NOTIFICATION_FLAG"
+  fi
+fi

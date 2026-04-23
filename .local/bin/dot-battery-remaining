@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-battery-remaining
+
+# Returns the battery percentage remaining as an integer.
+# Used by the battery monitor and the battery-status hotkey.
+
+upower -i "$(upower -e | grep BAT | head -n1)" | awk '/percentage/ {
+    print int($2)
+    exit
+}'
