@@ -27,8 +27,24 @@ The re-origin pass. Identity changes (LICENSE, README, FUNDING.yml removal), WSL
 _Avoid_: MVP, initial commit, v1.
 
 **Phase 2**:
-Deferred additions as independent follow-up PRs. Adds Hyprland as secondary Arch GUI alongside `niri` (not replacing it), imports scripts from `/Users/imrellx/code/lab/omarchy/bin`, and anything else lifted from Omarchy or other sources.
+Deferred additions as independent follow-up PRs. Split into two sub-phases that ship in order.
 _Avoid_: V2, future work.
+
+**Phase 2a (script import)**:
+Arch-Linux-first import of scripts from `/Users/imrellx/code/lab/omarchy/bin`, renamed from `omarchy-*` → `dot-*`, landing in `.local/bin/` alongside the existing `dot-*` fleet. Linux-only; macOS is out of scope; Debian is best-effort per script where the binary equivalents exist. Every source script gets one of three dispositions in the upfront inventory (`docs/prd/0003-*`): `take` (import now), `defer-to-hyprland` (ships with Phase 2b — flagged by any reference to `hyprctl|hypr-|HYPRLAND`, including transitively through cross-script calls), or `skip`. Theme scripts are skipped wholesale because the existing theme indirection layer is authoritative and structurally incompatible with omarchy's per-app model. Update tooling imports primitives only (`update-firmware`, `update-keyring`, `update-system-pkgs`, `update-aur-pkgs`, `update-orphan-pkgs`, `update-time`); the `omarchy-update` orchestrator plus its `omarchy-hook` / `omarchy-state` / `omarchy-show-done` lifecycle web stay out. The `pkg-*` family (`pkg-add`, `pkg-aur-add`, etc.) is imported as a runtime package toolkit under `dot-pkg-*`; it complements the declarative `_install/default/packages/` manifest without competing with it. Collisions with existing niri-native `dot-*` scripts default to niri-native wins.
+_Avoid_: phase 2.a, 2.1, scripts phase.
+
+**Phase 2b (Hyprland)**:
+Hyprland added as secondary Arch GUI alongside `niri` (not replacing it). The `defer-to-hyprland` scripts from the Phase 2a inventory land with this PR. Scope also includes a keybind-migration strategy: omarchy's Hyprland keybinds reference the deferred scripts, and some of them duplicate niri keybinds for niri-native counterparts — 2b decides whether to mirror, diverge, or share a common subset between the two compositors.
+_Avoid_: phase 2.b, 2.2, Hyprland phase.
+
+**Phase 2c (feature bundles)**:
+Features that cross into packages + config + keybind + compositor integration — not just script imports. Current known member: VoxType (dictation via `wtype` + `voxtype-bin`, GPU detection via `hw-vulkan`, waybar integration, Hyprland-format keybind that needs niri rewrite). Deferred out of 2a to avoid diluting the 190-script sweep with feature-launch work.
+_Avoid_: phase 2.c, 2.3.
+
+**Phase 2d (app additions)**:
+Package additions + small configs for apps named in the Phase 2 planning pass but not sourced from omarchy/bin. Known members: Obsidian, Typora, LM Studio, Ollama, GitHub CLI (`gh`), XCompose (config at `~/.XCompose` plus the imported `dot-restart-xcompose` script from 2a), and a universal-clipboard implementation to be chosen during 2d scoping. Each ships as its own PR with its own install-tier decision (pacman vs AUR vs flatpak vs mise vs brew cask on macOS). Unlike 2a, these are not Linux-only — apps with macOS equivalents get installed there too. The `install-terminal` script from 2a is the mechanism for adding Alacritty or Kitty as a secondary terminal when the user wants one; Wezterm is not in omarchy's supported list and would require a one-line extension to the imported script.
+_Avoid_: phase 2.d, 2.4.
 
 ### Packaging
 
