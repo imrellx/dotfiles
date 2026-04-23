@@ -35,6 +35,7 @@ export DEFAULT_PACKAGES_PACMAN=(
   "openbsd-netcat"
   "openssh"
   "pacman-contrib"
+  "plocate"
   "pwgen"
   "ripgrep"
   "rsync"
