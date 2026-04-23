@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-update-keyring
+
+# Refresh archlinux-keyring so pacman can verify the latest maintainer signatures.
+# dropped: omarchy-keyring setup block (AUR package + omarchy signing key
+# `40DFB630FF42BCFFB047046CF0134EE680CAC571`). Not applicable outside the omarchy
+# distribution — we don't pull from omarchy's AUR mirror or package repo.
+
+echo -e "\e[32m\nUpdate Arch signing keys\e[0m"
+sudo pacman -Sy --noconfirm archlinux-keyring >/dev/null

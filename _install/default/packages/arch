@@ -15,6 +15,7 @@ export DEFAULT_PACKAGES_PACMAN=(
   "fd"
   "ffmpeg"
   "fontconfig"
+  "fwupd"
   "fzf"
   "git"
   "git-delta"

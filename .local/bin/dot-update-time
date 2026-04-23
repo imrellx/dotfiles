@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-update-time
+
+# Restart systemd-timesyncd so the system clock resynchronises from NTP.
+
+echo "Updating time..."
+sudo systemctl restart systemd-timesyncd

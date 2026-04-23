@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-hw-surface
+
+# Detect whether the computer is a Microsoft Surface device.
+
+[[ $(cat /sys/class/dmi/id/sys_vendor 2>/dev/null) == "Microsoft Corporation" ]] &&
+  dot-hw-match "Surface"

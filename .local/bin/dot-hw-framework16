@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-hw-framework16
+
+# Detect whether the computer is a Framework Laptop 16.
+
+[[ $(cat /sys/class/dmi/id/sys_vendor 2>/dev/null) == "Framework" ]] &&
+  dot-hw-match "Laptop 16"
