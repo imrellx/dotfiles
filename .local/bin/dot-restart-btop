@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-restart-btop
+
+# Reload btop configuration (used by the Omarchy theme switching).
+
+pkill -SIGUSR2 btop

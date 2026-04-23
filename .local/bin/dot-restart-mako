@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-restart-mako
+
+# Reload mako configuration (used by the Omarchy theme switching).
+
+makoctl reload
