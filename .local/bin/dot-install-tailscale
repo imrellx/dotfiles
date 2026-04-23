@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-install-tailscale
+
+# Install the Tailscale mesh VPN service and a web app for the Tailscale Admin Console.
+
+curl -fsSL https://tailscale.com/install.sh | sh
+
+sudo systemctl enable --now tailscaled
+
+echo -e "\nStarting Tailscale..."
+sudo tailscale up --accept-routes
+
+dot-webapp-install "Tailscale" "https://login.tailscale.com/admin/machines" https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/tailscale-light.png
