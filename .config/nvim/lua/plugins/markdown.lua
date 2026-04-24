@@ -9,7 +9,7 @@ return {
       vim.g.mkdp_auto_close = false
       vim.g.mkdp_markdown_css = markdown_preview_css_path
     end,
-    build = "cd app && yarn install",
+    build = "cd app && npx --yes yarn install",
   },
   {
     "stevearc/conform.nvim",
