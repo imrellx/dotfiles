@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-launch-editor
+
+# Launch the default editor as determined by $EDITOR (set via ~/.config/uwsm/default) (or nvim if missing).
+# Starts suitable editors in a terminal window and otherwise as a regular application.
+
+command -v "$EDITOR" &>/dev/null || EDITOR=nvim
+
+case "$EDITOR" in
+nvim | vim | nano | micro | hx | helix | fresh)
+  exec dot-launch-tui "$EDITOR" "$@"
+  ;;
+*)
+  exec setsid uwsm-app -- "$EDITOR" "$@"
+  ;;
+esac
