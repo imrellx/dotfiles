@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-update-firmware
+
+# Update system firmware using fwupd. Ensures the fwupd EFI binary is installed
+# in the ESP so UEFI capsule updates work with the Limine bootloader.
+
+set -e
+echo -e "\e[32mUpdate Firmware\e[0m"
+
+# dropped: `omarchy-cmd-missing fwupdmgr` guard (omarchy helper skipped per PRD-0003).
+# `dot-pkg-add` is idempotent on its own (via dot-pkg-missing + pacman -Q), so the
+# outer guard is redundant.
+dot-pkg-add fwupd
+
+if [[ -d /sys/firmware/efi ]] && [[ -f /usr/lib/fwupd/efi/fwupdx64.efi ]]; then
+  sudo install -D /usr/lib/fwupd/efi/fwupdx64.efi /boot/EFI/arch/fwupdx64.efi
+fi
+
+fwupdmgr refresh --force
+sudo fwupdmgr update
