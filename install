@@ -1978,6 +1978,7 @@ set_theme() {
       # Even after symlinking settings.ini, gsettings still needs to run to
       # switch the active theme so it takes effect.
       gsettings set org.gnome.desktop.interface gtk-theme "${theme}"
+      gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
     fi
 
     [ -n "${switch_wallpaper}" ] && "${DOTFILES_PATH}/.local/bin/dot-theme-set-bg"
