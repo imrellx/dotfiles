@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-restart-opencode
+
+# Reload opencode configuration (used by the Omarchy theme switching).
+
+if pgrep -x opencode >/dev/null; then
+  killall -SIGUSR2 opencode
+fi

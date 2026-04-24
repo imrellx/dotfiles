@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-restart-waybar
+
+dot-restart-app waybar

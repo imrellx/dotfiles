@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-restart-bluetooth
+
+# Unblock and restart the bluetooth service.
+
+echo -e "Unblocking bluetooth...\n"
+rfkill unblock bluetooth
+rfkill list bluetooth
