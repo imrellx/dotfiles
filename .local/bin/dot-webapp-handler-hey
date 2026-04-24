@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-webapp-handler-hey
+
+url="$1"
+web_url="https://app.hey.com"
+
+# Handle mailto: URLs
+if [[ $url =~ ^mailto: ]]; then
+  email="${url#mailto:}"
+  web_url="https://app.hey.com/messages/new?to=$email"
+fi
+
+exec dot-launch-webapp "$web_url"
