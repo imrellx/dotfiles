@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# lifted from omarchy/bin/omarchy-install-terminal
+
+# Install one of the approved terminals and set it as the xdg-terminal-exec default (Super + Return etc).
+
+if (($# == 0)); then
+  echo "Usage: dot-install-terminal [alacritty|ghostty|kitty]"
+  exit 1
+fi
+
+package="$1"
+
+# Map package name to desktop entry ID
+case "$package" in
+alacritty) desktop_id="Alacritty.desktop" ;;
+ghostty) desktop_id="com.mitchellh.ghostty.desktop" ;;
+kitty) desktop_id="kitty.desktop" ;;
+*)
+  echo "Unknown terminal: $package"
+  exit 1
+  ;;
+esac
+
+# Install package
+if dot-pkg-add "$package"; then
+  # dropped: `cp $OMARCHY_PATH/applications/Alacritty.desktop ~/.local/share/applications/`
+  # The Alacritty.desktop (with X-TerminalArg* keys) ships in this repo under
+  # .local/share/applications/ and is symlinked into ~/.local/share/applications/
+  # by _install/default/config_install's wildcard rule, so no runtime copy needed.
+
+  # Update xdg-terminals.list to prioritize the proper terminal
+  cat >~/.config/xdg-terminals.list <<EOF
+# Terminal emulator preference order for xdg-terminal-exec
+# The first found and valid terminal will be used
+$desktop_id
+EOF
+else
+  echo "Failed to install $package"
+fi
