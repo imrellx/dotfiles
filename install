@@ -888,24 +888,15 @@ EOF
     # This is for monitoring.
     PACKAGES_PACMAN+=("intel-gpu-tools")
 
-    # Choose driver based on generation.
+    # Choose driver based on generation. Legacy i965 covers Sandy Bridge through
+    # Haswell (2011-2013). Anything newer (Broadwell+) uses the iHD driver,
+    # which is also the safe default for future Intel silicon.
     case "${gpu_line}" in
-    *HD\ Graphics* | *Iris* | *Xe*)
-      PACKAGES_PACMAN+=("intel-media-driver")
-      ;;
     *2nd\ Generation* | *3rd\ Generation* | *GMA*)
       PACKAGES_PACMAN+=("libva-intel-driver")
       ;;
     *)
-      cat <<EOF
-
-See if your GPU is listed here: https://wiki.archlinux.org/title/Intel_graphics
-
-If you think it should work, please open an issue with the above device output.
-
-EOF
-
-      _error "Unsupported Intel GPU found, aborting!"
+      PACKAGES_PACMAN+=("intel-media-driver")
       ;;
     esac
     ;;
