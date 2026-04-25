@@ -202,7 +202,15 @@ binds {
     // Launcher.
     Mod+Space  hotkey-overlay-title="Launcher" { spawn "walker"; }
     Mod+W      repeat=false hotkey-overlay-title="Launcher (windows)" { spawn "walker" "--provider" "windows"; }
-    Mod+V      repeat=false hotkey-overlay-title="Launcher (clipboard)" { spawn "walker" "--provider" "clipboard"; }
+    Mod+Ctrl+V repeat=false hotkey-overlay-title="Launcher (clipboard)" { spawn "walker" "--provider" "clipboard"; }
+
+    // Universal clipboard. Mod+C/X/V dispatch via dot-send-shortcut, which
+    // emits Ctrl+Shift+letter to terminals and Ctrl+letter to everything else.
+    // See docs/adr/0005-niri-clipboard-keystroke-synthesis-f2.md for why the
+    // regex lives inside the helper rather than in this file.
+    Mod+C hotkey-overlay-title="Copy" { spawn "dot-send-shortcut" "copy"; }
+    Mod+X hotkey-overlay-title="Cut" { spawn "dot-send-shortcut" "cut"; }
+    Mod+V hotkey-overlay-title="Paste" { spawn "dot-send-shortcut" "paste"; }
 
     // Apps.
     Mod+Alt+H            hotkey-overlay-title="System health" { spawn "dot-launch-or-focus-tui" "monitor"; }
@@ -225,8 +233,11 @@ binds {
     // Window and column behavior.
     Mod+Q repeat=false hotkey-overlay-title="Close window" { close-window; }
 
-    Mod+C      hotkey-overlay-title="Center column" { center-column; }
-    Mod+Ctrl+C hotkey-overlay-title="Center all visible columns" { center-visible-columns; }
+    // Mod+C is reserved for universal-clipboard copy (see Launcher block above).
+    // Center-column relocated to Mod+Shift+C as a Phase 2b stopgap; the full
+    // Paneru port re-homes it to Alt+C.
+    Mod+Shift+C hotkey-overlay-title="Center column" { center-column; }
+    Mod+Ctrl+C  hotkey-overlay-title="Center all visible columns" { center-visible-columns; }
 
     Mod+Z      hotkey-overlay-title="Toggle floating window" { toggle-window-floating; }
     Mod+Ctrl+Z hotkey-overlay-title="Switch focus between floating and tiling"{ switch-focus-between-floating-and-tiling; }

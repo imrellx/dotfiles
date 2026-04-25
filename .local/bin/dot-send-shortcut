@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Universal-clipboard dispatcher for niri.
+#
+# Reads the focused window's app_id and synthesizes the Ctrl[+Shift]+letter
+# keystroke that the focused app expects for copy/cut/paste:
+#
+#   - Terminals (TERMINAL_RE): Ctrl+Shift+<letter>
+#   - Everything else:         Ctrl+<letter>
+#
+# Bound from .config/niri/config.kdl as Mod+C / Mod+X / Mod+V.
+#
+# TERMINAL_RE is the source of truth for the terminal-vs-GUI split. Keep it
+# in sync with .local/bin/dot-clip-paste-on-select to avoid drift between the
+# auto-paste-on-select flow and the universal-clipboard binds.
+#
+# Usage: dot-send-shortcut copy|cut|paste
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+TERMINAL_RE='ghostty|alacritty|wezterm|kitty|foot'
+
+case "${1:-}" in
+copy) letter="c" ;;
+cut) letter="x" ;;
+paste) letter="v" ;;
+*)
+  echo "Usage: $(basename "$0") copy|cut|paste" >&2
+  exit 1
+  ;;
+esac
+
+focused_app="$(niri msg --json focused-window | jq --raw-output ".app_id")"
+
+if [[ "${focused_app}" =~ (${TERMINAL_RE}) ]]; then
+  wtype -M ctrl -M shift "${letter}"
+else
+  wtype -M ctrl "${letter}"
+fi

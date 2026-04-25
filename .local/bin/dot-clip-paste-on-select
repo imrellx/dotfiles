@@ -9,16 +9,16 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-focused_app="$(niri msg --json focused-window | jq --raw-output ".app_id")"
+# Keep TERMINAL_RE in sync with .local/bin/dot-send-shortcut.
+TERMINAL_RE='ghostty|alacritty|wezterm|kitty|foot'
 
-# Separate multiple apps with | since this is used in a regex OR.
-ctrl_shift_v_apps="ghostty"
+focused_app="$(niri msg --json focused-window | jq --raw-output ".app_id")"
 ctrl_shift_modifier=""
 
 wl-copy
 
-# Certain apps like terminals typically use CTRL+SHIFT+v.
-if [[ "${focused_app}" =~ \.(${ctrl_shift_v_apps}) ]]; then
+# Terminals use Ctrl+Shift+V for paste; GUIs use Ctrl+V.
+if [[ "${focused_app}" =~ (${TERMINAL_RE}) ]]; then
   # We need to sleep because without this then the shift modifier has no effect.
   sleep 0.1
   ctrl_shift_modifier=",shift"
