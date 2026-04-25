@@ -92,6 +92,16 @@ Nickjj's theme-switching architecture, retained and extended. The main config fo
 Default active theme in Phase 1. Authored as `_themes/flexoki-dark/` by copying `_themes/tokyonight-moon/` and translating palette values to the Flexoki palette (`#100F0F` bg, `#CECDC3` fg, etc. — full palette sourced from `ivn-term/config/ghostty/config`). GTK portion of the theme is built from `imrellx/Colloid-gtk-theme` (our fork of `vinceliuice/Colloid-gtk-theme`) using a custom `_color-palette-flexoki.scss` + `--tweaks flexoki` scheme; the built theme is hosted as a release asset on the fork and pulled via `install_gui_themes()` like the other two themes.
 _Avoid_: Flexoki, flexoki (without the mode suffix — we may add a light variant later).
 
+### Keybinds
+
+**Cross-platform keybind philosophy**:
+Bindings are designed for muscle-memory parity between macOS (Paneru WM at `~/.config/paneru/paneru.toml`) and Linux (niri now; Hyprland in Phase 2b). Two anchors: (1) WM modifier is `Alt` on both platforms, mirroring Paneru's convention even though Linux convention is `Super`. (2) Clipboard modifier is `Cmd` on macOS (OS-native) ≡ `Super` on Linux (custom-bound). `Cmd` and `Super` are structurally the same physical key under the thumb. Trade-off accepted: `Alt`-as-WM on Linux eats whatever `Alt+letter` combos niri claims; only the set Paneru itself claims (`h/j/k/l/u/i/r/e/f/c/t/s/w/n`) is reserved, leaving other `Alt+letter` combos free for app-internal shortcuts and the user's Raycast-equivalent launcher binds.
+_Avoid_: per-platform divergent binds, niri's default `Super`-as-WM convention.
+
+**Universal clipboard**:
+Omarchy's pattern, scoped to a single machine: unified `Super+C` (copy), `Super+X` (cut), `Super+V` (paste), `Super+Ctrl+V` (history). NOT Apple's cross-device clipboard sync. Niri implementation differs from Hyprland's: niri has no `sendshortcut` dispatcher, so a new `.local/bin/dot-send-shortcut` script reads `niri msg --json focused-window`, branches on `app_id` against a terminal regex (`ghostty|alacritty|wezterm|kitty|foot`), and emits `Ctrl+Shift+letter` via `wtype` for terminals or `Ctrl+letter` otherwise (F2 dispatch, chosen over F1 universal-`Insert` synthesis after the research showed 4 of 5 terminals don't honor `Ctrl+Insert`/`Shift+Insert` against the CLIPBOARD selection by default). History storage backend is already in place: `elephant-clipboard-bin` (`packages/arch`) feeds Walker's clipboard provider, no `cliphist` needed. Phase 2d scope; Arch-only, GUI-only. Mac side is already covered by macOS-native `Cmd+C/V/X` plus Raycast Clipboard History (no parallel work needed there).
+_Avoid_: cross-device clipboard sync, Apple's "Universal Clipboard," `cliphist`, F1-Universal-Insert (rejected after terminal research), Hyprland-style `sendshortcut` (no niri equivalent).
+
 ## Relationships
 
 - **imrellx/dotfiles** retains the full commit history of **nickjj/dotfiles** up to the re-origin point. `git blame` still works. LICENSE attribution matches the commit ancestry.
