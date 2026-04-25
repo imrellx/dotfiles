@@ -2026,6 +2026,11 @@ You can safely close this terminal.
 The next time you open your terminal everything will be ready to go!
 EOF
 
+  if [ "${GUI_ENABLED}" == "1" ]; then
+    echo
+    echo "Log out and back into niri before testing universal clipboard."
+  fi
+
   # If there's no Wayland display then it's very likely the first time a user
   # enabled GUI mode. This is more dependable than checking FIRST_RUN=1 in
   # case someone installs the command line tools and adds GUI support later.

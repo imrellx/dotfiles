@@ -3,6 +3,7 @@
 
 export DEFAULT_SYSTEMD_ENABLED_SERVICES=(
   "docker.service"
+  "elephant.service --user --now"
   "lactd.service"
   "libvirtd.socket"
   "paccache.timer --now"
