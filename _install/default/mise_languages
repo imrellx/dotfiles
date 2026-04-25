@@ -5,10 +5,12 @@
 declare -A DEFAULT_MISE_LANGUAGES
 
 # Language runtimes. Node pinned to @22 because npm tooling regularly breaks
-# on major bumps; the rest float on latest.
+# on major bumps; the rest float on latest. Python intentionally omitted —
+# uv-first Python posture (see CLAUDE.md), and on Linux a mise-managed
+# python shadows /usr/bin/python via PATH and breaks AUR build scripts.
+# Add per-machine via MISE_LANGUAGES_EXTRAS if you need it.
 DEFAULT_MISE_LANGUAGES["node"]="node@22"
 DEFAULT_MISE_LANGUAGES["bun"]="bun@latest"
-DEFAULT_MISE_LANGUAGES["python"]="python@latest"
 DEFAULT_MISE_LANGUAGES["rust"]="rust@latest"
 DEFAULT_MISE_LANGUAGES["go"]="go@latest"
 DEFAULT_MISE_LANGUAGES["zig"]="zig@latest"
