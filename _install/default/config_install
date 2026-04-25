@@ -12,7 +12,6 @@ export DEFAULT_CONFIG_INSTALL=(
   "ln -fns \"\${DOTFILES_PATH}/.config/gnupg/gpg-agent.conf\" \"\${XDG_CONFIG_HOME}/gnupg/gpg-agent.conf\""
   "ln -fns \"\${DOTFILES_PATH}/.config/helix\" \"\${XDG_CONFIG_HOME}/helix\""
   "ln -fns \"\${DOTFILES_PATH}/.config/lazygit\" \"\${XDG_CONFIG_HOME}/lazygit\""
-  "ln -fns \"\${DOTFILES_PATH}/.config/mise/config.toml\" \"\${XDG_CONFIG_HOME}/mise/config.toml\""
   "ln -fns \"\${DOTFILES_PATH}/.config/nvim\" \"\${XDG_CONFIG_HOME}/nvim\""
   "ln -fns \"\${DOTFILES_PATH}/.config/sesh/sesh.toml\" \"\${XDG_CONFIG_HOME}/sesh/sesh.toml\""
   "ln -fns \"\${DOTFILES_PATH}/.config/starship/starship.toml\" \"\${XDG_CONFIG_HOME}/starship/starship.toml\""
